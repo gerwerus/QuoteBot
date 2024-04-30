@@ -1,0 +1,49 @@
+version: "3.9"
+
+x-env:
+  &default-env
+  env_file: env/.env
+
+services:
+  telegram_bot:
+    <<: *default-env
+    build:
+      context: .
+      dockerfile: ci-cd/bot.Dockerfile
+    depends_on:
+      - pg
+    networks:
+      - webapp-access
+      - db-access
+
+  pg:
+    <<: *default-env
+    command: -c 'fsync=off' -c 'full_page_writes=off'
+    image: postgres:16.2-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    restart: always
+    ports:
+      - "5432:5432"
+    networks:
+      - db-access
+
+  webapp:
+    <<: *default-env
+    build:
+      context: .
+      dockerfile: ci-cd/webapp.Dockerfile
+    ports:
+      - 8000:8000
+    depends_on:
+      - pg
+    networks:
+      - webapp-access
+      - db-access
+
+volumes:
+  postgres_data:
+
+networks:
+  db-access:
+  webapp-access:
