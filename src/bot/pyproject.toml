@@ -1,13 +1,14 @@
 [tool.poetry]
-name = "quotebot"
+name = "telegram bot"
 version = "0.1.0"
-description = "app for managing posts in telegram"
+description = "bot for managing posts in telegram"
 authors = ["Simon Druchinin, Prosyannikov German"]
-readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
+aiogram = "^3.5.0"
+
 
 [build-system]
 requires = ["poetry-core"]

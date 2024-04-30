@@ -72,7 +72,7 @@ env/*
 .env
 .venv
 venv/
-!env/bot.env.example
+!env/.env.example
 
 # mkdocs documentation
 /site

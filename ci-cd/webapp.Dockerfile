@@ -17,17 +17,17 @@ RUN pip install "poetry==$POETRY_VERSION"
 RUN python -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
-COPY ./src/bot/pyproject.toml .
-COPY ./src/bot/poetry.lock .
+COPY ./src/webapp/pyproject.toml .
+COPY ./src/webapp/poetry.lock .
 RUN . /venv/bin/activate && poetry install --no-root --no-dev
 
 FROM base as final
 COPY --from=builder /venv /venv
 
 ENV PATH="/venv/bin:$PATH"
-COPY ./scripts/bot-entrypoint.sh /scripts/bot-entrypoint.sh
-COPY ./src/bot ./bot
+COPY ./scripts/webapp-entrypoint.sh /scripts/webapp-entrypoint.sh
+COPY ./src/webapp ./webapp
 
-RUN chmod a+x /scripts/bot-entrypoint.sh
+RUN chmod a+x /scripts/webapp-entrypoint.sh
 
-ENTRYPOINT ["/bin/sh", "/scripts/bot-entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "/scripts/webapp-entrypoint.sh"]

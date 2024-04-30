@@ -1,13 +1,16 @@
 [tool.poetry]
-name = "quotebot"
+name = "webapp"
 version = "0.1.0"
-description = "app for managing posts in telegram"
+description = "webapp for managing posts in telegram"
 authors = ["Simon Druchinin, Prosyannikov German"]
-readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
+fastapi = "^0.110.3"
+gunicorn = "^22.0.0"
+uvicorn = {extras = ["standard"], version = "^0.29.0"}
+
 
 [build-system]
 requires = ["poetry-core"]
