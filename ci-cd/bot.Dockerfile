@@ -30,4 +30,4 @@ COPY ./src/bot ./bot
 
 RUN chmod a+x /scripts/bot-entrypoint.sh
 
-CMD ["/scripts/bot-entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "/scripts/bot-entrypoint.sh"]
