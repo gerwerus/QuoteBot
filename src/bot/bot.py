@@ -3,11 +3,9 @@ import logging
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters.command import CommandStart
-from dotenv import load_dotenv
 
 from .settings import BotSettings
 
-load_dotenv("C:/Users/admin/Desktop/QuoteBot/env/bot.env")
 logging.basicConfig(level=logging.INFO)
 settings = BotSettings.initialize_from_environment()
 
