@@ -15,19 +15,19 @@ ENV PIP_DEFAULT_TIMEOUT=100 \
 
 RUN pip install "poetry==$POETRY_VERSION"
 RUN python -m venv /venv
+ENV PATH="/venv/bin:$PATH"
 
 COPY pyproject.toml .
 COPY poetry.lock .
-RUN . /venv/bin/activate && poetry install
-
-COPY ./src/bot .
+RUN . /venv/bin/activate && poetry install --no-root
 
 FROM base as final
-ENV PATH="/opt/venv/bin:$PATH"
+COPY --from=builder /venv /venv
 
+ENV PATH="/venv/bin:$PATH"
 COPY ./scripts/bot-entrypoint.sh /scripts/bot-entrypoint.sh
-COPY ./src/bot .
+COPY ./src/bot ./bot
 
-RUN chmod a+x /scripts/docker-entrypoint.sh
+RUN chmod a+x /scripts/bot-entrypoint.sh
 
-CMD ["/scripts/docker-entrypoint.sh"]
+CMD ["/scripts/bot-entrypoint.sh"]
