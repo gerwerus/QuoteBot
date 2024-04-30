@@ -10,5 +10,5 @@ class BotSettings:
     @classmethod
     def initialize_from_environment(cls) -> Self:
         return cls(
-            TOKEN=os.getenv("TOKEN"),
+            TOKEN=os.getenv("BOT_TOKEN"),
         )
