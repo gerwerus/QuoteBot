@@ -4,7 +4,6 @@ ENV PYTHONFAULTHANDLER=1 \
     PYTHONHASHSEED=random \
     PYTHONUNBUFFERED=1
 
-RUN apt-get update && apt-get install -y gcc libffi-dev g++
 WORKDIR /app
 
 FROM base as builder
@@ -19,15 +18,15 @@ RUN python -m venv /venv
 
 COPY pyproject.toml .
 COPY poetry.lock .
-RUN . /venv/bin/activate && poetry install --with webapp
+RUN . /venv/bin/activate && poetry install
 
-COPY ./src/webapp .
+COPY ./src/bot .
 
 FROM base as final
 ENV PATH="/opt/venv/bin:$PATH"
 
-COPY ./scripts/docker-entrypoint.sh /scripts/docker-entrypoint.sh
-COPY ./src/webapp .
+COPY ./scripts/bot-entrypoint.sh /scripts/bot-entrypoint.sh
+COPY ./src/bot .
 
 RUN chmod a+x /scripts/docker-entrypoint.sh
 
