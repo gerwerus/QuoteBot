@@ -28,6 +28,8 @@ ENV PATH="/venv/bin:$PATH"
 COPY ./scripts/webapp-entrypoint.sh /scripts/webapp-entrypoint.sh
 COPY ./src/webapp ./webapp
 
+WORKDIR /app/webapp/
+
 RUN chmod a+x /scripts/webapp-entrypoint.sh
 
 ENTRYPOINT ["/bin/sh", "/scripts/webapp-entrypoint.sh"]
