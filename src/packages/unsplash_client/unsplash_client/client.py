@@ -1,7 +1,7 @@
 import aiohttp
 import asyncio
 
-from entities import UnsplashModel
+from .entities import UnsplashModel
 from pydantic import TypeAdapter
 
 
@@ -26,7 +26,7 @@ class UnsplashClient:
         return await asyncio.gather(
             asyncio.create_task(self.__get_photo(keyword, photo_amount, width))
         )
-    
+
     # async def download_photo(self, url) -> BytesIo:
     #     response = requests.get(url)
     #     if response.status_code == 200:
@@ -44,4 +44,5 @@ async def main():
     print(text)
 
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())

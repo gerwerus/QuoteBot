@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "image_text"
+name = "image_text_client"
 version = "0.1.0"
 description = "Place text to image"
 authors = ["German"]
@@ -7,7 +7,6 @@ authors = ["German"]
 [tool.poetry.dependencies]
 python = "^3.12"
 pillow = "^10.3.0"
-quote-client = { path = "../quote_client"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

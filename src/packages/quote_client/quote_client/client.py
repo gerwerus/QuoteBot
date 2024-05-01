@@ -2,7 +2,7 @@ import aiohttp
 import asyncio
 import random
 
-from entities import LangChoices, QuoteModel
+from .entities import LangChoices, QuoteModel
 
 
 class QuoteClient:
@@ -19,7 +19,7 @@ class QuoteClient:
             async with session.get(self.API_URL, params=params) as response:
                 return QuoteModel.model_validate(await response.json())
 
-    async def get_quotes(self, lang=LangChoices.RUSSIAN, amount=1) -> list[dict]:
+    async def get_quotes(self, amount=1, lang=LangChoices.RUSSIAN) -> list[dict]:
         tasks = []
         for _ in range(amount):
             tasks.append(asyncio.create_task(self.__get_quote(lang)))

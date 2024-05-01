@@ -2,7 +2,7 @@ import io
 import textwrap
 from PIL import Image, ImageFont, ImageDraw
 
-from entities import ColorChoices, FontChoicesRu
+from .entities import ColorChoices, FontChoicesRu
 
 
 class ImageTextClient:
@@ -32,7 +32,7 @@ class ImageTextClient:
     def image_place_text(
         self,
         text: str,
-        img_stream: str,
+        img_stream: str | io.BytesIO,
         fontsize: int = 32,
         font_path: FontChoicesRu = FontChoicesRu.FONT1,
         text_color: ColorChoices = ColorChoices.WHITE,
@@ -51,14 +51,11 @@ class ImageTextClient:
             img.save("a_test.png")
 
 
-import requests
-from quote_client import QuoteClient 
-
-response = requests.get(
-    "https://images.unsplash.com/photo-1417325384643-aac51acc9e5d?q=75&fm=jpg"
-)
-a = ImageTextClient()
-a.image_place_text(
-    "asgdgkdmlsfdsfs sdfsdokwfdflfgfs И немного русского шамана",
-    io.BytesIO(response.content),
-)
+# response = requests.get(
+#     "https://images.unsplash.com/photo-1417325384643-aac51acc9e5d?q=75&fm=jpg"
+# )
+# a = ImageTextClient()
+# a.image_place_text(
+#     "asgdgkdmlsfdsfs sdfsdokwfdflfgfs И немного русского шамана",
+#     io.BytesIO(response.content),
+# )

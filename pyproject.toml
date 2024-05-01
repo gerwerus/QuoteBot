@@ -8,6 +8,9 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
+quote_client = { path = "./src/packages/quote_client", develop = true }
+image_text = { path = "./src/packages/image_text", develop = true }
+unsplash_client = { path = "./src/packages/unsplash_client", develop = true }
 
 [build-system]
 requires = ["poetry-core"]

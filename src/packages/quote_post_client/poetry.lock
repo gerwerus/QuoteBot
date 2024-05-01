@@ -237,21 +237,20 @@ files = [
 ]
 
 [[package]]
-name = "image-text"
+name = "image-text-client"
 version = "0.1.0"
 description = "Place text to image"
 optional = false
 python-versions = "^3.12"
 files = []
-develop = true
+develop = false
 
 [package.dependencies]
 pillow = "^10.3.0"
-quote_client = {path = "../quote_client"}
 
 [package.source]
 type = "directory"
-url = "src/packages/image_text"
+url = "../image_text_client"
 
 [[package]]
 name = "multidict"
@@ -555,7 +554,7 @@ description = "Get random quotes from forismatic API"
 optional = false
 python-versions = "^3.12"
 files = []
-develop = true
+develop = false
 
 [package.dependencies]
 aiohttp = "^3.9.5"
@@ -563,7 +562,7 @@ pydantic = "^2.7.1"
 
 [package.source]
 type = "directory"
-url = "src/packages/quote_client"
+url = "../quote_client"
 
 [[package]]
 name = "typing-extensions"
@@ -583,7 +582,7 @@ description = "Get photos from Unsplash API(50 per hour max)"
 optional = false
 python-versions = "^3.12"
 files = []
-develop = true
+develop = false
 
 [package.dependencies]
 aiohttp = "^3.9.5"
@@ -591,7 +590,7 @@ pydantic = "^2.7.1"
 
 [package.source]
 type = "directory"
-url = "src/packages/unsplash_client"
+url = "../unsplash_client"
 
 [[package]]
 name = "yarl"
@@ -699,4 +698,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "60b3e6c388e003231b0041094d436b58084f074bd21f261f239f1c00a5160e3e"
+content-hash = "f29e75b70d20b0988eb8e82e6a52d962368c57f12539a087e9266edcfb932cb4"
