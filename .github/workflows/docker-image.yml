@@ -15,6 +15,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Copy env file
-      run: cp .env.example .env
+      run: cp ./env/.env.example ./env/.env
     - name: Build the Docker image
       run: docker-compose up --build --remove-orphans
