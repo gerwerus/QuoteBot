@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "unsplash_client"
+version = "0.1.0"
+description = "Get photos from Unsplash API(50 per hour max)"
+authors = ["German"]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+aiohttp = "^3.9.5"
+pydantic = "^2.7.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

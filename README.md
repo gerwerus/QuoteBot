@@ -9,3 +9,8 @@ docker-compose up --build --remove-orphans
 ```bash
 poetry install
 ```
+
+### Расположение виртуальных окружений
+```
+C:\Users\%username%\AppData\Local\pypoetry\Cache\virtualenvs
+```
