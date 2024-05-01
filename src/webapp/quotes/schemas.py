@@ -1,14 +1,14 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
 
 
-class PostSchemaCrete(BaseModel):    
+class PostSchemaCreate(BaseModel):    
     text: str
     author: str
-    image_url: str
-    image_with_text_url: str | None
+    image_url: HttpUrl
     keyword_ru: str
     keyword_en: str
-    is_published: bool
+    image_with_text_url: str | None = None
 
-class PostSchemaRead(BaseModel):
+class PostSchemaRead(PostSchemaCreate):
     id: int
+    # is_published: bool
