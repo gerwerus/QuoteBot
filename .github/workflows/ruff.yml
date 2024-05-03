@@ -24,7 +24,9 @@ jobs:
         pip install ruff
         pip install poetry
         poetry install
-    - name: Analysing the code with ruff
+    - name: Check format the code with ruff
       run: |
         ruff format
+    - name: Lint the code with ruff
+      run: |
         ruff check
