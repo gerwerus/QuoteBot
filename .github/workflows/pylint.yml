@@ -24,6 +24,6 @@ jobs:
         pip install ruff
         poetry install
     - name: Analysing the code with pylint
-      run: &&
+      run: |
         ruff format
         ruff check
