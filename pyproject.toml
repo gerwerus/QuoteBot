@@ -9,6 +9,29 @@ package-mode = false
 [tool.poetry.dependencies]
 python = "^3.12"
 
+[tool.poetry.group.lint.dependencies]
+ruff = "0.4.2"
+
+[tool.poetry.group.mypy.dependencies]
+mypy = "1.10.0" 
+mypy-extensions = "1.0.0"
+pydantic = "2.7.1"
+
+[tool.ruff]
+preview = false
+line-length = 120
+exclude = ["migrations"]
+
+[tool.ruff.lint]
+select = [ "E", "F", "A", "Q", "B", "COM", "C4", "DJ", "FIX", "PIE", "T20", "PT", "RET", "SIM", "N", "ERA", "ISC", "I"]
+
+[tool.ruff.lint.pep8-naming]
+classmethod-decorators = ["pydantic.field_validator"]
+
+[tool.mypy]
+exclude = ["^settings\\.py$"]
+
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
