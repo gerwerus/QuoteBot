@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  check_ruff:
     runs-on: ubuntu-latest
     strategy:
       matrix:
