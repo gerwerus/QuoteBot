@@ -15,9 +15,9 @@ class Post(Base):
     text: Mapped[str] = mapped_column(Text)
     author: Mapped[str] = mapped_column(String(length=128))
     image_url: Mapped[str] = mapped_column(URLType)
-    image_with_text_url: Mapped[str | None] = mapped_column(FileField)
-    keyword_ru: Mapped[str] = mapped_column(String(length=64))
-    keyword_en: Mapped[str] = mapped_column(String(length=64))
+    image_with_text_url: Mapped[str | None] = mapped_column(FileField, nullable=True)
+    keyword_ru: Mapped[str | None] = mapped_column(String(length=64), nullable=True)
+    keyword_en: Mapped[str | None] = mapped_column(String(length=64), nullable=True)
     is_published: Mapped[bool] = mapped_column(default=False)
 
     def __str__(self) -> str:
