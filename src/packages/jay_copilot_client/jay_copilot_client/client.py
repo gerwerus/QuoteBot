@@ -4,7 +4,13 @@ from urllib.parse import urljoin
 import requests
 from pydantic import TypeAdapter
 
-from .entities import AppIdList, AppModel, Conversation, ConversationHistory, ConversationIdList
+from .entities import (
+    AppIdList,
+    AppModel,
+    Conversation,
+    ConversationHistory,
+    ConversationIdList,
+)
 from .settings import JayCopilotSettings
 
 
@@ -12,6 +18,7 @@ class JayCopilotClient:
     """
     More info about API:  https://help.jaycopilot.com/api
     """
+
     BASE_URL = "https://app.jaycopilot.com/api/appsAdapter/"
 
     def __init__(self, settings: JayCopilotSettings | None = None):
@@ -38,9 +45,13 @@ class JayCopilotClient:
             headers=self.default_headers,
         )
         response.raise_for_status()
-        return TypeAdapter(list[Conversation]).validate_python(response.json()["conversations"])
+        return TypeAdapter(list[Conversation]).validate_python(
+            response.json()["conversations"]
+        )
 
-    def create_conversation(self, conversation_name: str, *, app_id: AppIdList | None = None) -> Conversation:
+    def create_conversation(
+        self, conversation_name: str, *, app_id: AppIdList | None = None
+    ) -> Conversation:
         """
         Creates a new conversation with the given name and optional app ID.
 
@@ -57,19 +68,23 @@ class JayCopilotClient:
         )
         response.raise_for_status()
         return Conversation.model_validate(response.json())
-    
-    def send_message(self,message: str, *, conversation_id: ConversationIdList) -> ConversationHistory:
+
+    def send_message(
+        self, message: str, *, conversation_id: ConversationIdList
+    ) -> ConversationHistory:
         """
         Sends a message to the given conversation.
         """
         response = requests.post(
-            url=urljoin(self.BASE_URL, f"conversations/{conversation_id.value}/message"),
+            url=urljoin(
+                self.BASE_URL, f"conversations/{conversation_id.value}/message"
+            ),
             json={"text": message},
             headers=self.default_headers,
         )
         response.raise_for_status()
         return ConversationHistory.model_validate(response.json())
-    
+
     def get_quote_keywords(self, quote: str, keywords_amount: int = 1) -> list[str]:
         """
         Retrieves a list of quote keywords.
@@ -80,7 +95,7 @@ class JayCopilotClient:
         )
         text = conversation_history.content[0].text
         return text.replace("Ключевые слова: ", "").rstrip(".").split(", ")
-    
+
     @cached_property
     def default_headers(self) -> dict[str, str]:
         return {"X-API-KEY": self.settings.API_KEY}

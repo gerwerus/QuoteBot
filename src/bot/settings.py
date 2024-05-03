@@ -6,7 +6,7 @@ from typing import Self
 @dataclass
 class BotSettings:
     TOKEN: str
-    
+
     @classmethod
     def initialize_from_environment(cls) -> Self:
         return cls(

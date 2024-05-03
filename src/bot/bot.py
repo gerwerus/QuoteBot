@@ -18,9 +18,10 @@ async def cmd_start(message: types.Message):
     await bot.send_message(chat_id=-1002044200889, text="Hello!")
     await message.answer("Hello!")
 
+
 async def main():
     await dp.start_polling(bot)
-    
+
 
 if __name__ == "__main__":
     asyncio.run(main())

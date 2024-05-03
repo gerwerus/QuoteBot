@@ -5,11 +5,11 @@ from pydantic import BaseModel, Field
 
 class ConversationIdList(StrEnum):
     quotes_conversation_id = "078f8eda-2f53-4e0a-a91c-91b18a53c8b6"
-    
+
 
 class AppIdList(StrEnum):
     GPT_4 = "5382c082-f063-42ae-9086-f85df937aa8b"
-    
+
 
 class AppModel(BaseModel):
     id: str
