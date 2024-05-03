@@ -1,23 +1,23 @@
-from fastapi import APIRouter, Depends
-from pydantic import TypeAdapter
-from sqlalchemy import insert, select
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from config.database import get_async_session
+from fastapi import APIRouter, Depends
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from .models import Post
 from .schemas import PostSchemaCreate, PostSchemaRead
 
 router = APIRouter(
     prefix="/quotes",
-    tags=["Quotes"]
+    tags=["Quotes"],
 )
+
 
 @router.get("")
 async def get_quotes(session: AsyncSession = Depends(get_async_session)) -> list[PostSchemaRead]:
     query = select(Post)
     result = await session.execute(query)
     return result.scalars().all()
+
 
 @router.post("")
 async def create_quote(quote: PostSchemaCreate, session: AsyncSession = Depends(get_async_session)) -> PostSchemaRead:

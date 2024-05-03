@@ -1,15 +1,13 @@
 from typing import AsyncGenerator
 
+from libcloud.storage.drivers.minio import MinIOStorageDriver
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
-
 from sqlalchemy_file.storage import StorageManager
-from libcloud.storage.drivers.minio import MinIOStorageDriver
 
 from .settings import settings
-
 
 DATABASE_URL = f"postgresql+asyncpg://{settings.DB_USER}:{settings.DB_PASS}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"
 Base = declarative_base()

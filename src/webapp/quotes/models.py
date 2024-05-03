@@ -1,16 +1,15 @@
+from config.database import Base
 from sqlalchemy import String, Text
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy_file import FileField
 from sqlalchemy_utils import URLType
 
-from config.database import Base
-
 app_name = "quotes"
+
 
 class Post(Base):
     __tablename__ = f"{app_name}_posts"
-    
+
     id: Mapped[int] = mapped_column(primary_key=True)
     text: Mapped[str] = mapped_column(Text)
     author: Mapped[str] = mapped_column(String(length=128))
