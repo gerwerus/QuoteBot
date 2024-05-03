@@ -49,13 +49,3 @@ class ImageTextClient:
                 H / 2 + offset_y,
             )
             img.save("a_test.png")
-
-
-# response = requests.get(
-#     "https://images.unsplash.com/photo-1417325384643-aac51acc9e5d?q=75&fm=jpg"
-# )
-# a = ImageTextClient()
-# a.image_place_text(
-#     "asgdgkdmlsfdsfs sdfsdokwfdflfgfs И немного русского шамана",
-#     io.BytesIO(response.content),
-# )
