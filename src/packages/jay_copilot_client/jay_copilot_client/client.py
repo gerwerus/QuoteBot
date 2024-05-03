@@ -45,13 +45,9 @@ class JayCopilotClient:
             headers=self.default_headers,
         )
         response.raise_for_status()
-        return TypeAdapter(list[Conversation]).validate_python(
-            response.json()["conversations"]
-        )
+        return TypeAdapter(list[Conversation]).validate_python(response.json()["conversations"])
 
-    def create_conversation(
-        self, conversation_name: str, *, app_id: AppIdList | None = None
-    ) -> Conversation:
+    def create_conversation(self, conversation_name: str, *, app_id: AppIdList | None = None) -> Conversation:
         """
         Creates a new conversation with the given name and optional app ID.
 
@@ -69,16 +65,12 @@ class JayCopilotClient:
         response.raise_for_status()
         return Conversation.model_validate(response.json())
 
-    def send_message(
-        self, message: str, *, conversation_id: ConversationIdList
-    ) -> ConversationHistory:
+    def send_message(self, message: str, *, conversation_id: ConversationIdList) -> ConversationHistory:
         """
         Sends a message to the given conversation.
         """
         response = requests.post(
-            url=urljoin(
-                self.BASE_URL, f"conversations/{conversation_id.value}/message"
-            ),
+            url=urljoin(self.BASE_URL, f"conversations/{conversation_id.value}/message"),
             json={"text": message},
             headers=self.default_headers,
         )
