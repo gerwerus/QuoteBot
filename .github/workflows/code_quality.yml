@@ -24,6 +24,7 @@ jobs:
         pip install ruff mypy poetry
         pip install poetry
         poetry install
+        poetry lock --no-update
     - name: Analysing the code
       run: |
         ruff format --check
