@@ -667,6 +667,22 @@ typing-extensions = "*"
 urllib3 = "*"
 
 [[package]]
+name = "minio-client"
+version = "0.1.0"
+description = ""
+optional = false
+python-versions = "^3.12"
+files = []
+develop = false
+
+[package.dependencies]
+minio = "^7.2.7"
+
+[package.source]
+type = "directory"
+url = "../packages/minio_client"
+
+[[package]]
 name = "packaging"
 version = "24.0"
 description = "Core utilities for Python packages"
@@ -1365,4 +1381,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "63c19c22dc7a54f3dcfe057345216b7a6c5540988e22f50ad142092c9fc4265d"
+content-hash = "3e4a0cdc036cc7229c77c061177b37483a890fbc4b72360e546a11202d50b3fa"

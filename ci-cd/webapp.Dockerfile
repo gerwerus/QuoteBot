@@ -17,6 +17,7 @@ RUN pip install "poetry==$POETRY_VERSION"
 RUN python -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
+COPY ./src/packages /packages
 COPY ./src/webapp/pyproject.toml .
 COPY ./src/webapp/poetry.lock .
 RUN . /venv/bin/activate && poetry install --no-root --no-dev

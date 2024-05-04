@@ -12,3 +12,5 @@ class BotSettings:
         return cls(
             TOKEN=os.getenv("BOT_TOKEN", ""),
         )
+
+settings = BotSettings.initialize_from_environment()

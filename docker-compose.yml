@@ -15,6 +15,7 @@ services:
     networks:
       - webapp-access
       - db-access
+      - minio-network
 
   pg:
     <<: *default-env

@@ -1,8 +1,8 @@
-"""Initial migration
+"""Initial commit
 
-Revision ID: f8870244cc08
+Revision ID: 121014791901
 Revises: 
-Create Date: 2024-05-04 07:20:17.291817
+Create Date: 2024-05-04 13:09:31.898404
 
 """
 from typing import Sequence, Union
@@ -10,11 +10,11 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 import sqlalchemy_utils
-import sqlalchemy_file
+import config
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'f8870244cc08'
+revision: str = '121014791901'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -27,7 +27,7 @@ def upgrade() -> None:
     sa.Column('text', sa.Text(), nullable=False),
     sa.Column('author', sa.String(length=128), nullable=False),
     sa.Column('image_url', sqlalchemy_utils.types.url.URLType(), nullable=False),
-    sa.Column('image_with_text_url', sqlalchemy_file.types.FileField(), nullable=True),
+    sa.Column('image_with_text', config.minio_field.MinioField(bucket_name="quotes-files"), nullable=True),
     sa.Column('keyword_ru', sa.String(length=64), nullable=True),
     sa.Column('keyword_en', sa.String(length=64), nullable=True),
     sa.Column('is_published', sa.Boolean(), nullable=False),

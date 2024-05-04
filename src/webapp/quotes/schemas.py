@@ -1,13 +1,12 @@
 from datetime import timedelta
 
+from sqlalchemy import inspect
+
 from config.database import minio_client
 from config.settings import settings
 from pydantic import BaseModel, HttpUrl, field_validator
 
-
-class ImageData(BaseModel):
-    data: str | bytes
-    filename: str | None = None
+from .models import Post
 
 
 class PostSchemaCreate(BaseModel):
@@ -16,21 +15,21 @@ class PostSchemaCreate(BaseModel):
     image_url: str
     keyword_ru: str | None = None
     keyword_en: str | None = None
-    image_with_text_url: ImageData | None = None
+    image_with_text: str | None = None
 
 
 class PostSchemaRead(PostSchemaCreate):
     id: int
-    image_with_text_url: HttpUrl | None = None
+    image_with_text: HttpUrl | None = None
     is_published: bool
 
-    @field_validator("image_with_text_url", mode="before")
+    @field_validator("image_with_text", mode="before")
     def generate_url_from_filefield(cls, value) -> str | None:
-        if value:
-            return minio_client.get_presigned_url(
+        if value["object_name"]:
+            return minio_client.cli.get_presigned_url(
                 "GET",
-                bucket_name=settings.MINIO_STORAGE_BUCKET,
-                object_name=value["file_id"],
+                bucket_name=value["bucket_name"],
+                object_name=value["object_name"],
                 expires=timedelta(hours=1),
             )
         return None

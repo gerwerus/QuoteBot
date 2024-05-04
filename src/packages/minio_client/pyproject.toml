@@ -1,0 +1,13 @@
+[tool.poetry]
+name = "minio_client"
+version = "0.1.0"
+description = ""
+authors = ["Druchinin Simon"]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+minio = "^7.2.7"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

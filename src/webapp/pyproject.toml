@@ -13,9 +13,9 @@ uvicorn = {extras = ["standard"], version = "^0.29.0"}
 sqlalchemy = "^2.0.29"
 alembic = "^1.13.1"
 asyncpg = "^0.29.0"
-sqlalchemy-utils = "^0.41.2"
 sqlalchemy-file = "^0.6.0"
-minio = "^7.2.7"
+sqlalchemy-utils = "^0.41.2"
+minio_client = {path = "../packages/minio_client"}
 
 
 [build-system]
