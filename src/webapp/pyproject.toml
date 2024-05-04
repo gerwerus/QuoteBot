@@ -15,6 +15,7 @@ alembic = "^1.13.1"
 asyncpg = "^0.29.0"
 sqlalchemy-utils = "^0.41.2"
 sqlalchemy-file = "^0.6.0"
+minio = "^7.2.7"
 
 
 [build-system]

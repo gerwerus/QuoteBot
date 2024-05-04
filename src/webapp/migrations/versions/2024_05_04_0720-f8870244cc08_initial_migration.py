@@ -1,8 +1,8 @@
-"""Initial
+"""Initial migration
 
-Revision ID: 23a493d90a96
+Revision ID: f8870244cc08
 Revises: 
-Create Date: 2024-05-01 04:31:18.745848
+Create Date: 2024-05-04 07:20:17.291817
 
 """
 from typing import Sequence, Union
@@ -14,7 +14,7 @@ import sqlalchemy_file
 
 
 # revision identifiers, used by Alembic.
-revision: str = '23a493d90a96'
+revision: str = 'f8870244cc08'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -28,8 +28,8 @@ def upgrade() -> None:
     sa.Column('author', sa.String(length=128), nullable=False),
     sa.Column('image_url', sqlalchemy_utils.types.url.URLType(), nullable=False),
     sa.Column('image_with_text_url', sqlalchemy_file.types.FileField(), nullable=True),
-    sa.Column('keyword_ru', sa.String(length=64), nullable=False),
-    sa.Column('keyword_en', sa.String(length=64), nullable=False),
+    sa.Column('keyword_ru', sa.String(length=64), nullable=True),
+    sa.Column('keyword_en', sa.String(length=64), nullable=True),
     sa.Column('is_published', sa.Boolean(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
