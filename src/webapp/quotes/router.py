@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .models import Post
-from .schemas import PostSchemaCreate, PostSchemaRead
+from .schemas import PostSchemaCreate, PostSchemaRead, PostQueryParams
 
 router = APIRouter(
     prefix="/quotes",
@@ -13,8 +13,11 @@ router = APIRouter(
 
 
 @router.get("")
-async def get_quotes(session: AsyncSession = Depends(get_async_session)) -> list[PostSchemaRead]:
+async def get_quotes(query_params: PostQueryParams = Depends(), session: AsyncSession = Depends(get_async_session)) -> list[PostSchemaRead]:
     query = select(Post)
+    for key, value in query_params.model_dump().items():
+        if value is not None:
+            query = query.where(getattr(Post, key) == value)
     result = await session.execute(query)
     return result.scalars().all()
 

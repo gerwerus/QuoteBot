@@ -1,12 +1,7 @@
 from datetime import timedelta
 
-from sqlalchemy import inspect
-
 from config.database import minio_client
-from config.settings import settings
 from pydantic import BaseModel, HttpUrl, field_validator
-
-from .models import Post
 
 
 class PostSchemaCreate(BaseModel):
@@ -33,3 +28,7 @@ class PostSchemaRead(PostSchemaCreate):
                 expires=timedelta(hours=1),
             )
         return None
+
+
+class PostQueryParams(BaseModel):
+    is_published: bool | None = None

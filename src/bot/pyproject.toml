@@ -10,6 +10,9 @@ python = "^3.12"
 aiogram = "^3.5.0"
 requests = "^2.31.0"
 inner_api_client = {path = "../packages/inner_api_client"}
+aiohttp = "^3.9.5"
+loguru = "^0.7.2"
+apscheduler = "^3.10.4"
 
 
 [build-system]

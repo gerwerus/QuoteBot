@@ -15,9 +15,13 @@ class InnerApiClient:
         
         self.quotes_endpoint = urljoin(self.settings.BASE_URL, "quotes")
     
-    async def get_posts(self) -> list[Post]:
+    async def get_posts(self, is_published: bool | None = None) -> list[Post]:
+        params = {}
+        if is_published is not None:
+            params["is_published"] = str(is_published)
+        
         async with aiohttp.ClientSession() as session:
-            async with session.get(self.quotes_endpoint) as response:
+            async with session.get(self.quotes_endpoint, params=params) as response:
                 data = await response.json()
                 return TypeAdapter(list[Post]).validate_python(data)
 

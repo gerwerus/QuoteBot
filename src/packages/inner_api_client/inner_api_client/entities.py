@@ -14,4 +14,3 @@ class PostCreate(BaseModel):
 
 class Post(PostCreate):
     id: int
-    image_with_text: HttpUrl | None = None
