@@ -1,7 +1,8 @@
 from datetime import timedelta
+from typing import Optional
 
 from config.database import minio_client
-from pydantic import BaseModel, HttpUrl, field_validator
+from pydantic import BaseModel, field_validator
 
 
 class PostSchemaCreate(BaseModel):
@@ -15,7 +16,6 @@ class PostSchemaCreate(BaseModel):
 
 class PostSchemaRead(PostSchemaCreate):
     id: int
-    image_with_text: HttpUrl | None = None
     is_published: bool
 
     @field_validator("image_with_text", mode="before")
@@ -28,6 +28,11 @@ class PostSchemaRead(PostSchemaCreate):
                 expires=timedelta(hours=1),
             )
         return None
+    
+
+class PostSchemaUpdate(PostSchemaRead):
+    __annotations__ = {field: Optional[field_type] for field, field_type in PostSchemaRead.__annotations__.items()}
+    
 
 
 class PostQueryParams(BaseModel):

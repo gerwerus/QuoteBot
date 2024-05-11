@@ -52,16 +52,16 @@ async def send_post():
     await bot.send_photo(chat_id=QUOTE_GROUP_ID, photo=image, caption=post.text)
 
 
-async def main():
-    scheduler.start()
-    await dp.start_polling(bot)
-
-
 def configure_scheduled_tasks(scheduler: AsyncIOScheduler) -> None:
     trigger = OrTrigger([CronTrigger(hour=6, timezone=TIMEZONE), CronTrigger(hour=10, timezone=TIMEZONE), CronTrigger(hour=18, timezone=TIMEZONE)])
     scheduler.add_job(send_post, trigger=trigger)
 
 
-if __name__ == "__main__":
+async def main():
     configure_scheduled_tasks(scheduler)
+    scheduler.start()
+    await dp.start_polling(bot)
+
+
+if __name__ == "__main__":
     asyncio.run(main())
