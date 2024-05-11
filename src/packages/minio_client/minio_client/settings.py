@@ -1,5 +1,5 @@
-from dataclasses import dataclass
 import os
+from dataclasses import dataclass
 from typing import Self
 
 
@@ -10,7 +10,7 @@ class MinioSettings:
     MINIO_STORAGE_ACCESS_KEY: str
     MINIO_STORAGE_SECRET_KEY: str
     MINIO_STORAGE_BUCKET: str
-    
+
     @classmethod
     def initialize_from_environment(cls) -> Self:
         return cls(

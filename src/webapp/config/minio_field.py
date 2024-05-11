@@ -1,5 +1,5 @@
 from sqlalchemy import Dialect
-from sqlalchemy.types import TypeDecorator, String
+from sqlalchemy.types import String, TypeDecorator
 
 
 class MinioField(TypeDecorator):
@@ -13,4 +13,3 @@ class MinioField(TypeDecorator):
 
     def process_result_value(self, value: str, dialect: Dialect) -> dict[str, str]:
         return {"bucket_name": self.bucket_name, "object_name": value}
-    

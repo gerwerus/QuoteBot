@@ -8,12 +8,12 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.combining import OrTrigger
 from apscheduler.triggers.cron import CronTrigger
 from inner_api_client import InnerApiClient
-from inner_api_client.entities import PostCreate, PostUpdate
+from inner_api_client.entities import PostUpdate
 from loguru import logger
 
 from .config.constants import QUOTE_GROUP_ID, TIMEZONE
-from .config.utils import get_image_bytes
 from .config.settings import settings
+from .config.utils import get_image_bytes
 
 logging.basicConfig(level=logging.INFO)
 
@@ -36,10 +36,11 @@ async def cmd_start(message: types.Message) -> None:
     #     keyword_en="keyword_en",
     # )
     # image_response = requests.get("https://t4.ftcdn.net/jpg/06/66/00/13/240_F_666001386_68GsUMjRfNTTj9sOuNUW7FTPal16CV9G.jpg")
-    
+
     # created_post = await inner_api_client.create_post(post, image_data=image_response.content, bucket_name="quotes-files")
     # print(created_post)
-    
+
+
 async def send_post() -> None:
     posts = await inner_api_client.get_posts(is_published=False)
     if not posts:
@@ -47,9 +48,9 @@ async def send_post() -> None:
 
     post = posts[0]
     logger.debug("GOT post (id={}) to be sent {}", post.id, post)
-    
+
     image = BufferedInputFile(
-        file = await get_image_bytes(url=post.image_with_text),
+        file=await get_image_bytes(url=post.image_with_text),
         filename=inner_api_client.minio_client.get_filename_from_url(url=post.image_with_text),
     )
     await bot.send_photo(chat_id=QUOTE_GROUP_ID, photo=image, caption=post.text)

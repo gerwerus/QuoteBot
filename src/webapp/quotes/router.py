@@ -1,10 +1,10 @@
 from config.database import get_async_session
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .models import Post
-from .schemas import PostSchemaCreate, PostSchemaRead, PostSchemaUpdate, PostQueryParams
+from .schemas import PostQueryParams, PostSchemaCreate, PostSchemaRead, PostSchemaUpdate
 
 router = APIRouter(
     prefix="/quotes",
@@ -13,7 +13,9 @@ router = APIRouter(
 
 
 @router.get("")
-async def get_quotes(query_params: PostQueryParams = Depends(), session: AsyncSession = Depends(get_async_session)) -> list[PostSchemaRead]:
+async def get_quotes(
+    query_params: PostQueryParams = Depends(), session: AsyncSession = Depends(get_async_session),
+) -> list[PostSchemaRead]:
     query = select(Post)
     for key, value in query_params.model_dump().items():
         if value is not None:
@@ -32,7 +34,9 @@ async def create_quote(quote: PostSchemaCreate, session: AsyncSession = Depends(
 
 
 @router.patch("/{quote_id}", status_code=status.HTTP_200_OK)
-async def update_quote(quote_id: int, quote: PostSchemaUpdate, session: AsyncSession = Depends(get_async_session)) -> PostSchemaRead:
+async def update_quote(
+    quote_id: int, quote: PostSchemaUpdate, session: AsyncSession = Depends(get_async_session),
+) -> PostSchemaRead:
     query = select(Post).where(Post.id == quote_id)
     result = await session.execute(query)
     quote_to_update = result.scalars().first()
