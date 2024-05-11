@@ -11,7 +11,7 @@ from inner_api_client import InnerApiClient
 from inner_api_client.entities import PostCreate
 from loguru import logger
 
-from .config.constants import QUOTE_GROUP_ID
+from .config.constants import QUOTE_GROUP_ID, TIMEZONE
 from .config.utils import get_image_bytes
 from .config.settings import settings
 
@@ -21,7 +21,7 @@ inner_api_client = InnerApiClient()
 
 bot = Bot(token=settings.TOKEN)
 dp = Dispatcher()
-scheduler = AsyncIOScheduler(timezone="Asia/Novosibirsk")
+scheduler = AsyncIOScheduler(timezone=TIMEZONE)
 
 
 @dp.message(CommandStart())
@@ -58,7 +58,7 @@ async def main():
 
 
 def configure_scheduled_tasks(scheduler: AsyncIOScheduler) -> None:
-    trigger = OrTrigger([CronTrigger(hour=6, timezone="Asia/Novosibirsk"), CronTrigger(hour=10, timezone="Asia/Novosibirsk"), CronTrigger(hour=18, timezone="Asia/Novosibirsk")])
+    trigger = OrTrigger([CronTrigger(hour=6, timezone=TIMEZONE), CronTrigger(hour=10, timezone=TIMEZONE), CronTrigger(hour=18, timezone=TIMEZONE)])
     scheduler.add_job(send_post, trigger=trigger)
 
 
