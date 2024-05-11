@@ -1,6 +1,6 @@
 from config.database import get_async_session
-from fastapi import APIRouter, Depends, status, Response
-from sqlalchemy import select
+from fastapi import APIRouter, Depends, status, HTTPException
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .models import Post
@@ -37,8 +37,9 @@ async def update_quote(quote_id: int, quote: PostSchemaUpdate, session: AsyncSes
     result = await session.execute(query)
     quote_to_update = result.scalars().first()
     if not quote_to_update:
-        return Response(content={"message": "Quote not found"}, status_code=status.HTTP_404_NOT_FOUND)
-    quote_to_update.update(quote.model_dump())
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Quote not found")
+    stmt = update(Post).where(Post.id == quote_to_update.id).values(quote.model_dump(exclude_unset=True))
+    await session.execute(stmt)
     await session.commit()
     await session.refresh(quote_to_update)
     return quote_to_update

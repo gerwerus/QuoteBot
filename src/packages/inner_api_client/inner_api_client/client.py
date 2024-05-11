@@ -4,7 +4,7 @@ import aiohttp
 from minio_client import MinioClient
 from pydantic import TypeAdapter
 
-from .entities import Post, PostCreate
+from .entities import Post, PostCreate, PostUpdate
 from .settings import InnerApiSettings
 
 
@@ -13,7 +13,7 @@ class InnerApiClient:
         self.settings = settings or InnerApiSettings.initialize_from_environment()
         self.minio_client = minio_client or MinioClient(settings=settings)
         
-        self.quotes_endpoint = urljoin(self.settings.BASE_URL, "quotes")
+        self.quotes_endpoint = urljoin(self.settings.BASE_URL, "quotes/")
     
     async def get_posts(self, is_published: bool | None = None) -> list[Post]:
         params = {}
@@ -40,3 +40,10 @@ class InnerApiClient:
             async with session.post(self.quotes_endpoint, json=post.model_dump()) as response:
                 data = await response.json()
                 return TypeAdapter(Post).validate_python(data)
+    
+    async def update_post(self, id: int, post: PostUpdate) -> Post:
+        async with aiohttp.ClientSession(raise_for_status=True) as session:
+            async with session.patch(urljoin(self.quotes_endpoint, str(id)), json=post.model_dump(exclude_unset=True)) as response:
+                data = await response.json()
+                return TypeAdapter(Post).validate_python(data)
+

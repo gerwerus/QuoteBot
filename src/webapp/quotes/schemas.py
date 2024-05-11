@@ -30,8 +30,14 @@ class PostSchemaRead(PostSchemaCreate):
         return None
     
 
-class PostSchemaUpdate(PostSchemaRead):
-    __annotations__ = {field: Optional[field_type] for field, field_type in PostSchemaRead.__annotations__.items()}
+class PostSchemaUpdate(PostSchemaCreate):
+    text: str | None = None
+    author: str | None = None
+    image_url: str | None = None
+    keyword_ru: str | None = None
+    keyword_en: str | None = None
+    image_with_text: str | None = None
+    is_published: bool | None = None
     
 
 
