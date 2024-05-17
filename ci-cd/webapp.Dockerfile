@@ -17,6 +17,7 @@ RUN pip install "poetry==$POETRY_VERSION"
 RUN python -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
+COPY ./src/packages /packages
 COPY ./src/webapp/pyproject.toml .
 COPY ./src/webapp/poetry.lock .
 RUN . /venv/bin/activate && poetry install --no-root --no-dev
@@ -27,6 +28,8 @@ COPY --from=builder /venv /venv
 ENV PATH="/venv/bin:$PATH"
 COPY ./scripts/webapp-entrypoint.sh /scripts/webapp-entrypoint.sh
 COPY ./src/webapp ./webapp
+
+WORKDIR /app/webapp/
 
 RUN chmod a+x /scripts/webapp-entrypoint.sh
 

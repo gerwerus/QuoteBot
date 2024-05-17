@@ -4,11 +4,11 @@ from typing import Self
 
 
 @dataclass
-class JayCopilotSettings:
-    API_KEY: str
+class InnerApiSettings:
+    BASE_URL: str
 
     @classmethod
     def initialize_from_environment(cls) -> Self:
         return cls(
-            API_KEY=os.getenv("JAY_COPILOT_API_KEY", ""),
+            BASE_URL=os.getenv("INNER_API_URL", "http://webapp:8000"),
         )

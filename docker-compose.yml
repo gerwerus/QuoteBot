@@ -15,6 +15,7 @@ services:
     networks:
       - webapp-access
       - db-access
+      - minio-network
 
   pg:
     <<: *default-env
@@ -27,12 +28,15 @@ services:
       - "5432:5432"
     networks:
       - db-access
+      - minio-network
 
   webapp:
     <<: *default-env
     build:
       context: .
       dockerfile: ci-cd/webapp.Dockerfile
+    volumes:
+      - ./src/webapp/:/app/webapp/
     ports:
       - 8000:8000
     depends_on:
@@ -40,6 +44,27 @@ services:
     networks:
       - webapp-access
       - db-access
+      - minio-network
+  
+  minio:
+    <<: *default-env
+    build:
+      context: .
+      dockerfile: ci-cd/minio.Dockerfile
+    volumes:
+      - ./minio_data/data/:/data
+      - ./minio_data/conf/:/root/.minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - minio-network
+
 
 volumes:
   postgres_data:
@@ -47,3 +72,4 @@ volumes:
 networks:
   db-access:
   webapp-access:
+  minio-network:

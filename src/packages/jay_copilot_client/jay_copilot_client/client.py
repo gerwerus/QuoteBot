@@ -1,7 +1,7 @@
 from functools import cached_property
 from urllib.parse import urljoin
 
-import requests
+import requests  # type: ignore
 from pydantic import TypeAdapter
 
 from .entities import (
@@ -53,13 +53,13 @@ class JayCopilotClient:
 
         If no app ID is provided, the default GPT-4 app will be used.
         """
-        app_id = app_id or AppIdList.GPT_4.value
+        app_id = app_id or AppIdList.GPT_4
         headers = self.default_headers
         headers["Content-Type"] = "application/json"
 
         response = requests.post(
             url=urljoin(self.BASE_URL, "conversations"),
-            json={"name": conversation_name, "app": {"id": app_id}},
+            json={"name": conversation_name, "app": {"id": app_id.value}},
             headers=headers,
         )
         response.raise_for_status()

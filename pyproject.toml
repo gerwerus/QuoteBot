@@ -29,7 +29,7 @@ select = [ "E", "F", "A", "Q", "B", "COM", "C4", "DJ", "FIX", "PIE", "T20", "PT"
 classmethod-decorators = ["pydantic.field_validator"]
 
 [tool.mypy]
-exclude = ["^settings\\.py$"]
+exclude = ["^settings\\.py$", "webapp"]
 
 
 [build-system]
