@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "inner_api_client"
+version = "0.1.0"
+description = ""
+authors = ["Druchinin Simon"]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+aiohttp = "^3.9.5"
+pydantic = "^2.7.1"
+minio_client = {path = "../minio_client"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

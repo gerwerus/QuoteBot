@@ -82,5 +82,9 @@ venv/
 .dmypy.json
 dmypy.json
 
+
+# minio
+minio_data/
+
 # IDE
 .vscode
