@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "quote_post_client"
+version = "0.1.0"
+description = "Use API's to generate photo with quote by keyword"
+authors = ["German"]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+quote_client = { path = "../quote_client" }
+unsplash_client = { path = "../unsplash_client" }
+image_text_client = { path = "../image_text_client"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

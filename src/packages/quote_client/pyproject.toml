@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "quote_client"
+version = "0.1.0"
+description = "Get random quotes from forismatic API"
+authors = ["German Prosyannikov"]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+aiohttp = "^3.9.5"
+pydantic = "^2.7.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
