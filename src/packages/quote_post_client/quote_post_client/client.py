@@ -1,11 +1,12 @@
 import asyncio
+from io import BytesIO
 
 from image_text_client import ImageTextClient
 from inner_api_client import InnerApiClient
+from inner_api_client.entities import PostCreate
 from jay_copilot_client import JayCopilotClient
 from unsplash_client import UnsplashClient
 from quote_client import QuoteClient
-from quote_client.entities import LangChoices
 
 
 class QuoteGeneratorClient:
@@ -25,15 +26,20 @@ class QuoteGeneratorClient:
         self.unsplash_client = unsplash_client or UnsplashClient()
 
     async def get_post(self):
-        quote = self.quote_client.get_quotes(amount=1, lang=LangChoices.RUSSIAN)[0]
-        keyword = self.jay_copilot_client.get_quote_keywords(quote.text, 1)[0]
+        quote = (await self.quote_client.get_quotes())[0]
+        keywords = self.jay_copilot_client.get_quote_keywords(quote.text, 4)
+        image_url = await self.unsplash_client.get_photo_by_keyword(keywords.en[0])
+                
+        with BytesIO(await self.inner_api_client.get_image_bytes(url=image_url)) as image:
+            image_data, image_name = self.image_text_client.image_place_text(text=quote.text, img_stream=image)
 
-        print(quote)
-        print(keyword)
+        post = PostCreate(
+            text=quote.text,
+            author=quote.author,
+            image_url=image_url,
+            image_with_text=image_name,
+            keyword_ru=",".join(keywords.ru),
+            keyword_en=",".join(keywords.en),
+        )
         
-if __name__ == "__main__":
-    from dotenv import load_dotenv
-    load_dotenv("C:/Users/Катя/Desktop/QuoteBot/env/.env")
-    
-    client = QuoteGeneratorClient()
-    asyncio.run(client.get_post())
+        await self.inner_api_client.create_post(post, image_data=image_data, bucket_name="quotes-files")

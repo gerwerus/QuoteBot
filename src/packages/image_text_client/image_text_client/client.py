@@ -1,5 +1,6 @@
 import io
 import textwrap
+import uuid
 from PIL import Image, ImageFont, ImageDraw
 
 from .entities import ColorChoices, FontChoicesRu
@@ -37,10 +38,10 @@ class ImageTextClient:
         font_path: FontChoicesRu = FontChoicesRu.FONT1,
         text_color: ColorChoices = ColorChoices.WHITE,
         offset_y: int = 0,
-    ):
+    ) -> tuple[bytes, str]:
         with Image.open(img_stream) as img:
             W, H = img.size
-            font = ImageFont.truetype(font_path.value)
+            font = ImageFont.truetype(font_path.value, size=fontsize)
             self.__draw_multiple_line_text(
                 img,
                 text,
@@ -48,4 +49,8 @@ class ImageTextClient:
                 text_color,
                 H / 2 + offset_y,
             )
-            img.save("a_test.png")
+            image_name = f"{str(uuid.uuid4())}_{W}x{H}.{img.format.lower()}"
+            
+            with io.BytesIO() as image_bytes:
+                img.save(image_bytes, format=img.format)
+                return image_bytes.getvalue(), image_name

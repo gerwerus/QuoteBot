@@ -1,8 +1,9 @@
 from enum import Enum
+import os
 
 
 class FontChoicesRu(Enum):
-    FONT1 = "fonts/ru/1.ttf"
+    FONT1 = os.path.join(os.path.dirname(__file__), "fonts/ru/1.ttf")
 
 
 class ColorChoices(Enum):
