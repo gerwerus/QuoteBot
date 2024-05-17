@@ -82,7 +82,7 @@ class JayCopilotClient:
         Retrieves a list of quote keywords.
         """
         conversation_history = self.send_message(
-            f"Выведели {keywords_amount} ключевых слова из цитаты '{quote}'. Формат вывода: Ключевые слова: ...",
+            f"Выдели {keywords_amount} ключевых слова из цитаты '{quote}'. Формат вывода: Ключевые слова: ... Затем переведи ключевые слова на английский. Формат вывода: Keywords: ...",
             conversation_id=ConversationIdList.quotes_conversation_id,
         )
         text = conversation_history.content[0].text
