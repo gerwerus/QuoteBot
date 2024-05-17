@@ -1,18 +1,20 @@
 import aiohttp
-import asyncio
+from pydantic import TypeAdapter
 
 from .entities import UnsplashModel
-from pydantic import TypeAdapter
+from .settings import UnsplashSettings
 
 
 class UnsplashClient:
-    API_URL: str | None = "https://api.unsplash.com/photos/random"
-    ACCESS_KEY: str = "V1LPKwkwfKej0dfeGSaic24gzq9d84hjoh7I54zj6LI"
+    API_URL: str = "https://api.unsplash.com/photos/random"
+    
+    def __init__(self, settings: UnsplashSettings | None = None) -> None:
+        self.settings = settings | UnsplashSettings.initialize_from_environment()
 
-    async def __get_photo(self, keyword: str, amount: int, width: int) -> str:
+    async def get_photo_by_keyword(self, keyword: str, amount: int = 1, width: int = 720) -> list[UnsplashModel]:
         params = {
             "query": keyword,
-            "client_id": self.ACCESS_KEY,
+            "client_id": self.settings.ACCESS_KEY,
             "count": amount,
         }
         async with aiohttp.ClientSession() as session:
@@ -21,28 +23,3 @@ class UnsplashClient:
                 for el in json:
                     el.update(width=width)
                 return TypeAdapter(list[UnsplashModel]).validate_python(json)
-
-    async def get_by_keyword(self, keyword, photo_amount, width: int) -> list[dict]:
-        return await asyncio.gather(
-            asyncio.create_task(self.__get_photo(keyword, photo_amount, width))
-        )
-
-    # async def download_photo(self, url) -> BytesIo:
-    #     response = requests.get(url)
-    #     if response.status_code == 200:
-    #         with open(filename, 'wb') as f:
-    #             f.write(response.content)
-    #     else:
-    #         print('Failed to download the photo.')
-
-
-async def main():
-    q = UnsplashClient()
-    loop = asyncio.get_event_loop()
-    task = loop.create_task(q.get_by_keyword("jesus", 3, 600))
-    text = await asyncio.gather(task)
-    print(text)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
