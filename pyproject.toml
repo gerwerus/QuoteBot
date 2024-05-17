@@ -8,9 +8,13 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
-quote_client = { path = "./src/packages/quote_client", develop = true }
 image_text_client = { path = "./src/packages/image_text_client", develop = true }
+inner_api_client = { path = "./src/packages/inner_api_client", develop = true }
+jay_copilot_client = { path = "./src/packages/jay_copilot_client", develop = true }
+minio_client = { path = "./src/packages/minio_client", develop = true }
+quote_client = { path = "./src/packages/quote_client", develop = true }
 unsplash_client = { path = "./src/packages/unsplash_client", develop = true }
+
 
 [tool.poetry.group.lint.dependencies]
 ruff = "0.4.2"
