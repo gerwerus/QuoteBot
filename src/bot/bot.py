@@ -9,6 +9,7 @@ from apscheduler.triggers.combining import OrTrigger
 from apscheduler.triggers.cron import CronTrigger
 from inner_api_client import InnerApiClient
 from inner_api_client.entities import PostUpdate
+from quote_post_client import QuoteGeneratorClient
 from loguru import logger
 
 from .config.constants import QUOTE_GROUP_ID, TIMEZONE
@@ -21,11 +22,7 @@ inner_api_client = InnerApiClient()
 bot = Bot(token=settings.TOKEN)
 dp = Dispatcher()
 scheduler = AsyncIOScheduler(timezone=TIMEZONE)
-
-
-@dp.message(Command("send_post"))
-async def cmd_start(message: types.Message) -> None:
-    await send_post()
+qoute_post_client = QuoteGeneratorClient()
 
 
 async def send_post() -> None:
@@ -42,6 +39,13 @@ async def send_post() -> None:
     )
     await bot.send_photo(chat_id=QUOTE_GROUP_ID, photo=image, caption=post.text)
     await inner_api_client.update_post(id=post.id, post=PostUpdate(is_published=True))
+
+
+@dp.message(Command("make_post"))
+async def make_post(message: types.Message) -> None:
+    post = await qoute_post_client.get_post()
+    logger.debug("Post (id={}) was created", post.id)
+    await message.answer(f"Post (id={post.id}) was created")
 
 
 def configure_scheduled_tasks(scheduler: AsyncIOScheduler) -> None:

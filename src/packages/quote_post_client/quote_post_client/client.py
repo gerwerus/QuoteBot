@@ -3,7 +3,7 @@ from io import BytesIO
 
 from image_text_client import ImageTextClient
 from inner_api_client import InnerApiClient
-from inner_api_client.entities import PostCreate
+from inner_api_client.entities import Post, PostCreate
 from jay_copilot_client import JayCopilotClient
 from unsplash_client import UnsplashClient
 from quote_client import QuoteClient
@@ -25,14 +25,14 @@ class QuoteGeneratorClient:
         self.quote_client = quote_client or QuoteClient()
         self.unsplash_client = unsplash_client or UnsplashClient()
 
-    async def get_post(self):
+    async def get_post(self) -> Post:
         quote = (await self.quote_client.get_quotes())[0]
         keywords = self.jay_copilot_client.get_quote_keywords(quote.text, 4)
-        image_url = await self.unsplash_client.get_photo_by_keyword(keywords.en[0])
-                
+        image_results = await self.unsplash_client.get_photo_by_keyword(keywords.en[0])
+        image_url = image_results[0].result.link
+
         with BytesIO(await self.inner_api_client.get_image_bytes(url=image_url)) as image:
             image_data, image_name = self.image_text_client.image_place_text(text=quote.text, img_stream=image)
-
         post = PostCreate(
             text=quote.text,
             author=quote.author,
@@ -41,5 +41,5 @@ class QuoteGeneratorClient:
             keyword_ru=",".join(keywords.ru),
             keyword_en=",".join(keywords.en),
         )
-        
-        await self.inner_api_client.create_post(post, image_data=image_data, bucket_name="quotes-files")
+
+        return await self.inner_api_client.create_post(post, image_data=image_data, bucket_name="quotes-files")

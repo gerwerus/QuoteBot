@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, HttpUrl
 
 
 class ImageModel(BaseModel):
-    link: HttpUrl
+    link: str
     
     def __init__(self, width: int, **data):
         super().__init__(link=f"{data["raw"]}?q=75&fm=jpg&w={width}&fit=max", **data)

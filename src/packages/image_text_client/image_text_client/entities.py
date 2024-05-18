@@ -3,7 +3,8 @@ import os
 
 
 class FontChoicesRu(Enum):
-    FONT1 = os.path.join(os.path.dirname(__file__), "fonts/ru/1.ttf")
+    CENTURY_GOTHIC = os.path.join(os.path.dirname(__file__), "fonts/ru/century-gothic.ttf")
+    GILROY_MEDIUM = os.path.join(os.path.dirname(__file__), "fonts/ru/gilroy-medium.ttf")
 
 
 class ColorChoices(Enum):

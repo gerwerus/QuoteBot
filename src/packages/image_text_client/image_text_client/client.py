@@ -35,7 +35,7 @@ class ImageTextClient:
         text: str,
         img_stream: str | io.BytesIO,
         fontsize: int = 32,
-        font_path: FontChoicesRu = FontChoicesRu.FONT1,
+        font_path: FontChoicesRu = FontChoicesRu.GILROY_MEDIUM,
         text_color: ColorChoices = ColorChoices.WHITE,
         offset_y: int = 0,
     ) -> tuple[bytes, str]:
