@@ -1,6 +1,7 @@
-import aiohttp
 import asyncio
 import random
+
+import aiohttp
 
 from .entities import LangChoices, QuoteModel
 

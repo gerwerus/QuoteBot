@@ -12,7 +12,6 @@ from ..config.constants import QUOTE_GROUP_ID
 from ..config.settings import bot
 from ..filters.admin import AdminFilter
 
-
 router = Router(name="quotes")
 randint = SystemRandom().randint
 inner_api_client = InnerApiClient()
@@ -60,4 +59,4 @@ async def send_post(chat_id: int, *, set_is_published: bool = True) -> None:
 
 async def get_keywords_caption(keyword: str) -> str:
     keywords = keyword.split(",")
-    return "#" + " #".join(keywords[:randint(1, len(keywords))])  # randomize keywords amount
+    return "#" + " #".join(keywords[: randint(1, len(keywords))])  # randomize keywords amount
