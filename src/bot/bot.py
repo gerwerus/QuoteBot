@@ -6,17 +6,11 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.combining import OrTrigger
 from apscheduler.triggers.cron import CronTrigger
 
-from .config.constants import TIMEZONE
+from .config.constants import QUOTE_GROUP_ID, TIMEZONE
 from .config.settings import bot
 from .handlers.quotes import send_post, router as quotes_router
 
 logging.basicConfig(level=logging.INFO)
-
-
-dp = Dispatcher()
-scheduler = AsyncIOScheduler(timezone=TIMEZONE)
-
-dp.include_routers(quotes_router)
 
 
 def configure_scheduled_tasks(scheduler: AsyncIOScheduler) -> None:
@@ -27,11 +21,16 @@ def configure_scheduled_tasks(scheduler: AsyncIOScheduler) -> None:
             CronTrigger(hour=18, timezone=TIMEZONE),
         ],
     )
-    scheduler.add_job(send_post, trigger=trigger)
+    scheduler.add_job(send_post, trigger=trigger, kwargs={"chat_id": QUOTE_GROUP_ID})
 
 
 async def main() -> None:
+    dp = Dispatcher()
+    scheduler = AsyncIOScheduler(timezone=TIMEZONE)
+
+    dp.include_routers(quotes_router)
     configure_scheduled_tasks(scheduler)
+
     scheduler.start()
     await dp.start_polling(bot)
 

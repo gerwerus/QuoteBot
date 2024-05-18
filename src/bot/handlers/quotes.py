@@ -31,21 +31,16 @@ async def make_post(message: Message) -> None:
 
 @router.message(Command("view_post"), AdminFilter())
 async def view_post(message: Message) -> None:
-    posts = await inner_api_client.get_posts(is_published=False)
-    if not posts:
-        await message.answer("No posts to view")
-        raise ValueError("No posts to view")
-
-    post = posts[0]
-
-    image = BufferedInputFile(
-        file=await inner_api_client.get_image_bytes(url=post.image_with_text),
-        filename=inner_api_client.minio_client.get_filename_from_url(url=post.image_with_text),
-    )
-    await message.answer_photo(photo=image, caption=await get_keywords_caption(post.keyword_ru))
+    await send_post(chat_id=message.chat.id, set_is_published=False)
 
 
-async def send_post() -> None:
+@router.message(Command("send_post"), AdminFilter())
+async def force_send_post(message: Message) -> None:
+    await send_post(chat_id=QUOTE_GROUP_ID)
+    await message.answer(f"Post was sent to chat_id={QUOTE_GROUP_ID}")
+
+
+async def send_post(chat_id: int, *, set_is_published: bool = True) -> None:
     posts = await inner_api_client.get_posts(is_published=False)
     if not posts:
         raise ValueError("No posts to be sent")
@@ -57,8 +52,10 @@ async def send_post() -> None:
         file=await inner_api_client.get_image_bytes(url=post.image_with_text),
         filename=inner_api_client.minio_client.get_filename_from_url(url=post.image_with_text),
     )
-    await bot.send_photo(chat_id=QUOTE_GROUP_ID, photo=image, caption=await get_keywords_caption(post.keyword_ru))
-    await inner_api_client.update_post(id=post.id, post=PostUpdate(is_published=True))
+    await bot.send_photo(chat_id=chat_id, photo=image, caption=await get_keywords_caption(post.keyword_ru))
+
+    if set_is_published:
+        await inner_api_client.update_post(id=post.id, post=PostUpdate(is_published=True))
 
 
 async def get_keywords_caption(keyword: str) -> str:
