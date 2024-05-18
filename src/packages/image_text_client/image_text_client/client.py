@@ -1,7 +1,7 @@
 import io
 import textwrap
 import uuid
-from PIL import Image, ImageFont, ImageDraw
+from PIL import Image, ImageDraw, ImageEnhance, ImageFont
 
 from .entities import ColorChoices, FontChoicesRu
 
@@ -30,6 +30,10 @@ class ImageTextClient:
             )
             y_text += line_height
 
+    def change_brightness(self,image: Image, brightness: float = 0.7) -> Image:
+        enhancer = ImageEnhance.Brightness(image)
+        return enhancer.enhance(brightness)
+
     def image_place_text(
         self,
         text: str,
@@ -40,6 +44,9 @@ class ImageTextClient:
         offset_y: int = 0,
     ) -> tuple[bytes, str]:
         with Image.open(img_stream) as img:
+            format = img.format.lower()
+            img = self.change_brightness(img)
+
             W, H = img.size
             font = ImageFont.truetype(font_path.value, size=fontsize)
             self.__draw_multiple_line_text(
@@ -49,8 +56,8 @@ class ImageTextClient:
                 text_color,
                 H / 2 + offset_y,
             )
-            image_name = f"{str(uuid.uuid4())}_{W}x{H}.{img.format.lower()}"
+            image_name = f"{str(uuid.uuid4())}_{W}x{H}.{format}"
             
             with io.BytesIO() as image_bytes:
-                img.save(image_bytes, format=img.format)
+                img.save(image_bytes, format=format)
                 return image_bytes.getvalue(), image_name
