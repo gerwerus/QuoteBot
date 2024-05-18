@@ -45,7 +45,14 @@ class InnerApiClient:
     async def update_post(self, id: int, post: PostUpdate) -> Post:
         async with aiohttp.ClientSession(raise_for_status=True) as session:
             async with session.patch(
-                urljoin(self.quotes_endpoint, str(id)), json=post.model_dump(exclude_unset=True),
+                urljoin(self.quotes_endpoint, str(id)),
+                json=post.model_dump(exclude_unset=True),
             ) as response:
                 data = await response.json()
                 return TypeAdapter(Post).validate_python(data)
+
+    @staticmethod
+    async def get_image_bytes(url: str) -> bytes:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                return await response.read()

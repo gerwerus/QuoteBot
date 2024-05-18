@@ -10,6 +10,7 @@ from .entities import (
     Conversation,
     ConversationHistory,
     ConversationIdList,
+    QuoteKeywordList,
 )
 from .settings import JayCopilotSettings
 
@@ -77,16 +78,19 @@ class JayCopilotClient:
         response.raise_for_status()
         return ConversationHistory.model_validate(response.json())
 
-    def get_quote_keywords(self, quote: str, keywords_amount: int = 1) -> list[str]:
+    def get_quote_keywords(self, quote: str, keywords_amount: int = 1) -> QuoteKeywordList:
         """
         Retrieves a list of quote keywords.
         """
         conversation_history = self.send_message(
-            f"Выведели {keywords_amount} ключевых слова из цитаты '{quote}'. Формат вывода: Ключевые слова: ...",
+            f"Выдели {keywords_amount} ключевых слова из цитаты '{quote}'. Формат вывода: KeywordsRu: ... Затем переведи ключевые слова на английский. Формат вывода: KeywordsEn: ...",
             conversation_id=ConversationIdList.quotes_conversation_id,
         )
-        text = conversation_history.content[0].text
-        return text.replace("Ключевые слова: ", "").rstrip(".").split(", ")
+        text = conversation_history.content[0].text.split("\n")
+        return QuoteKeywordList(
+            ru=text[0].replace("KeywordsRu: ", "").split(", "),
+            en=text[1].replace("KeywordsEn: ", "").split(", "),
+        )
 
     @cached_property
     def default_headers(self) -> dict[str, str]:

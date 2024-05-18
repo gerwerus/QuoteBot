@@ -1,29 +1,44 @@
-import asyncio
+from io import BytesIO
 
 from image_text_client import ImageTextClient
-from unsplash_client import UnsplashClient
+from inner_api_client import InnerApiClient
+from inner_api_client.entities import Post, PostCreate
+from jay_copilot_client import JayCopilotClient
 from quote_client import QuoteClient
+from unsplash_client import UnsplashClient
 
 
 class QuoteGeneratorClient:
-    async def get_post(self, amount, image_width):
-        quote_bot = QuoteClient()
-        quotes = await asyncio.gather(
-            asyncio.create_task(quote_bot.get_quotes(amount=amount))
+    def __init__(
+        self,
+        *,
+        image_text_client: ImageTextClient | None = None,
+        inner_api_client: InnerApiClient | None = None,
+        jay_copilot_client: JayCopilotClient | None = None,
+        quote_client: QuoteClient | None = None,
+        unsplash_client: UnsplashClient | None = None,
+    ):
+        self.image_text_client = image_text_client or ImageTextClient()
+        self.inner_api_client = inner_api_client or InnerApiClient()
+        self.jay_copilot_client = jay_copilot_client or JayCopilotClient()
+        self.quote_client = quote_client or QuoteClient()
+        self.unsplash_client = unsplash_client or UnsplashClient()
+
+    async def get_post(self) -> Post:
+        quote = (await self.quote_client.get_quotes())[0]
+        keywords = self.jay_copilot_client.get_quote_keywords(quote.text, 4)
+        image_results = await self.unsplash_client.get_photo_by_keyword(keywords.en[0])
+        image_url = image_results[0].result.link
+
+        with BytesIO(await self.inner_api_client.get_image_bytes(url=image_url)) as image:
+            image_data, image_name = self.image_text_client.image_place_text(text=quote.text, img_stream=image)
+        post = PostCreate(
+            text=quote.text,
+            author=quote.author,
+            image_url=image_url,
+            image_with_text=image_name,
+            keyword_ru=",".join(keywords.ru),
+            keyword_en=",".join(keywords.en),
         )
-        # get keyword
-        keywords = ["jesus", "baby", "love"]
-        unsplash_bot = UnsplashClient()
-        for keyword in keywords:
-            imgs = await asyncio.gather(
-                asyncio.create_task(
-                    unsplash_bot.get_by_keyword(
-                        keyword=keyword, photo_amount=1, width=image_width
-                    )
-                )
-            )
-        image_text_bot = ImageTextClient()
-        for post in zip(quotes, imgs):
-            image_text_bot.image_place_text(
-                text=post[0],
-            )
+
+        return await self.inner_api_client.create_post(post, image_data=image_data, bucket_name="quotes-files")

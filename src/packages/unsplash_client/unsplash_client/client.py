@@ -7,9 +7,9 @@ from .settings import UnsplashSettings
 
 class UnsplashClient:
     API_URL: str = "https://api.unsplash.com/photos/random"
-    
+
     def __init__(self, settings: UnsplashSettings | None = None) -> None:
-        self.settings = settings | UnsplashSettings.initialize_from_environment()
+        self.settings = settings or UnsplashSettings.initialize_from_environment()
 
     async def get_photo_by_keyword(self, keyword: str, amount: int = 1, width: int = 720) -> list[UnsplashModel]:
         params = {

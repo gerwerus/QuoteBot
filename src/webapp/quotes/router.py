@@ -14,7 +14,8 @@ router = APIRouter(
 
 @router.get("")
 async def get_quotes(
-    query_params: PostQueryParams = Depends(), session: AsyncSession = Depends(get_async_session),
+    query_params: PostQueryParams = Depends(),
+    session: AsyncSession = Depends(get_async_session),
 ) -> list[PostSchemaRead]:
     query = select(Post)
     for key, value in query_params.model_dump().items():
@@ -35,7 +36,9 @@ async def create_quote(quote: PostSchemaCreate, session: AsyncSession = Depends(
 
 @router.patch("/{quote_id}", status_code=status.HTTP_200_OK)
 async def update_quote(
-    quote_id: int, quote: PostSchemaUpdate, session: AsyncSession = Depends(get_async_session),
+    quote_id: int,
+    quote: PostSchemaUpdate,
+    session: AsyncSession = Depends(get_async_session),
 ) -> PostSchemaRead:
     query = select(Post).where(Post.id == quote_id)
     result = await session.execute(query)

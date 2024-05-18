@@ -2,6 +2,8 @@ import os
 from dataclasses import dataclass
 from typing import Self
 
+from aiogram import Bot
+
 
 @dataclass
 class BotSettings:
@@ -17,3 +19,4 @@ class BotSettings:
 
 
 settings = BotSettings.initialize_from_environment()
+bot = Bot(token=settings.TOKEN)

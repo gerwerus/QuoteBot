@@ -6,9 +6,11 @@ authors = ["German"]
 
 [tool.poetry.dependencies]
 python = "^3.12"
+image_text_client = { path = "../image_text_client" }
+inner_api_client = { path = "../inner_api_client" }
+jay_copilot_client = { path = "../jay_copilot_client" }
 quote_client = { path = "../quote_client" }
 unsplash_client = { path = "../unsplash_client" }
-image_text_client = { path = "../image_text_client"}
 
 [build-system]
 requires = ["poetry-core"]

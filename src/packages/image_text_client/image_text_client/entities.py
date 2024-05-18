@@ -1,8 +1,10 @@
+import os
 from enum import Enum
 
 
 class FontChoicesRu(Enum):
-    FONT1 = "fonts/ru/1.ttf"
+    CENTURY_GOTHIC = os.path.join(os.path.dirname(__file__), "fonts/ru/century-gothic.ttf")
+    GILROY_MEDIUM = os.path.join(os.path.dirname(__file__), "fonts/ru/gilroy-medium.ttf")
 
 
 class ColorChoices(Enum):

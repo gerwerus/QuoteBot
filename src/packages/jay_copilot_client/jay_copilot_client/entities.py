@@ -46,3 +46,8 @@ class Conversation(BaseModel):
     updated_at: int = Field(alias="updatedAt")
     meta: dict
     history: list[ConversationHistory]
+
+
+class QuoteKeywordList(BaseModel):
+    ru: list[str]
+    en: list[str]
