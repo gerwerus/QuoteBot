@@ -10,3 +10,7 @@ class FontChoicesRu(Enum):
 class ColorChoices(Enum):
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
+
+
+class WatermarkChoices(Enum):
+    OBLIVION_SWAMP = os.path.join(os.path.dirname(__file__), "img/oblivion_swamp_watermark.png")

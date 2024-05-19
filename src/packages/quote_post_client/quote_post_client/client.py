@@ -1,6 +1,7 @@
 from io import BytesIO
 
 from image_text_client import ImageTextClient
+from image_text_client.entities import WatermarkChoices
 from inner_api_client import InnerApiClient
 from inner_api_client.entities import Post, PostCreate
 from jay_copilot_client import JayCopilotClient
@@ -31,7 +32,7 @@ class QuoteGeneratorClient:
         image_url = image_results[0].result.link
 
         with BytesIO(await self.inner_api_client.get_image_bytes(url=image_url)) as image:
-            image_data, image_name = self.image_text_client.image_place_text(text=quote.text, img_stream=image)
+            image_data, image_name = self.image_text_client.process_image(img_stream=image, text=quote.text, watermark=WatermarkChoices.OBLIVION_SWAMP)
         post = PostCreate(
             text=quote.text,
             author=quote.author,
