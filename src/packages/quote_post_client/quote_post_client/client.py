@@ -32,7 +32,7 @@ class QuoteGeneratorClient:
         image_url = image_results[0].result.link
 
         with BytesIO(await self.inner_api_client.get_image_bytes(url=image_url)) as image:
-            image_data, image_name = self.image_text_client.process_image(img_stream=image, text=quote.text, watermark=WatermarkChoices.OBLIVION_SWAMP)
+            image_data, image_name = self.image_text_client.process_image(img_stream=image, text=quote.text, author=quote.author, watermark=WatermarkChoices.OBLIVION_SWAMP)
         post = PostCreate(
             text=quote.text,
             author=quote.author,
