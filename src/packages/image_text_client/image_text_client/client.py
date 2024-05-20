@@ -95,7 +95,7 @@ class ImageTextClient:
             text=text,
             font=font,
             text_color=text_color,
-            text_start_height=height / 2 + offset_y,
+            text_start_height=int(0.35 * height) + offset_y,
         )
         if author:
             self.__draw_multiple_line_text(
