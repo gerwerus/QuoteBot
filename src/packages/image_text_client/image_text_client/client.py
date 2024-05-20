@@ -73,7 +73,7 @@ class ImageTextClient:
 
         with Image.open(watermark.value) as watermark:
             watermark_w, watermark_h = watermark.size
-            image.paste(watermark, ((image_w - watermark_w) // 2, int(0.8 * image_h)), watermark)
+            image.paste(watermark, ((image_w - watermark_w) // 2, int(0.85 * image_h)), watermark)
         
         return image
 
