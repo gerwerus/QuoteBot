@@ -3,8 +3,12 @@ from enum import Enum
 
 
 class FontChoicesRu(Enum):
-    CENTURY_GOTHIC = os.path.join(os.path.dirname(__file__), "fonts/ru/century-gothic.ttf")
-    GILROY_MEDIUM = os.path.join(os.path.dirname(__file__), "fonts/ru/gilroy-medium.ttf")
+    CENTURY_GOTHIC = os.path.join(
+        os.path.dirname(__file__), "fonts/ru/century-gothic.ttf"
+    )
+    GILROY_MEDIUM = os.path.join(
+        os.path.dirname(__file__), "fonts/ru/gilroy-medium.ttf"
+    )
 
 
 class ColorChoices(Enum):
@@ -13,4 +17,6 @@ class ColorChoices(Enum):
 
 
 class WatermarkChoices(Enum):
-    OBLIVION_SWAMP = os.path.join(os.path.dirname(__file__), "img/oblivion_swamp_watermark.png")
+    OBLIVION_SWAMP = os.path.join(
+        os.path.dirname(__file__), "img/oblivion_swamp_watermark.png"
+    )
