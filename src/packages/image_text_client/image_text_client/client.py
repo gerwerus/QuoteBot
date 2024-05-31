@@ -73,8 +73,12 @@ class ImageTextClient:
 
         with Image.open(watermark.value) as watermark:
             watermark_w, watermark_h = watermark.size
-            image.paste(watermark, ((image_w - watermark_w) // 2, int(0.85 * image_h)), watermark)
-        
+            image.paste(
+                watermark,
+                ((image_w - watermark_w) // 2, int(0.85 * image_h)),
+                watermark,
+            )
+
         return image
 
     def image_place_text(
@@ -117,7 +121,7 @@ class ImageTextClient:
         *,
         text: str,
         author: str | None = None,
-        fontsize: int = 32,
+        fontsize: int = 40,
         font_path: FontChoicesRu = FontChoicesRu.CENTURY_GOTHIC,
         text_color: ColorChoices = ColorChoices.WHITE,
         offset_y: int = 0,
