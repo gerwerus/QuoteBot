@@ -1,7 +1,4 @@
-from typing import Optional
 import aiohttp
-import asyncio
-
 from pydantic import TypeAdapter
 
 from .entities import Orientation, UnsplashModel
@@ -27,9 +24,11 @@ class UnsplashClient:
             "count": amount,
             "orientation": orientation,
         }
-        async with aiohttp.ClientSession() as session:
-            async with session.get(self.API_URL, params=params) as response:
-                json: list[dict] = await response.json()
-                for el in json:
-                    el.update(width=width)
-                return TypeAdapter(list[UnsplashModel]).validate_python(json)
+        async with aiohttp.ClientSession() as session, session.get(
+            self.API_URL,
+            params=params,
+        ) as response:
+            json: list[dict] = await response.json()
+            for el in json:
+                el.update(width=width)
+            return TypeAdapter(list[UnsplashModel]).validate_python(json)

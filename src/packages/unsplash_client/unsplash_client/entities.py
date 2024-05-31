@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import Literal, Self
+
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 Orientation = Literal["landscape", "portrait", "squarish"]
 
