@@ -39,7 +39,10 @@ classmethod-decorators = ["pydantic.field_validator"]
 extend-immutable-calls = ["Depends", "fastapi.Depends", "fastapi.params.Depends"]
 
 [tool.mypy]
-exclude = ["^settings\\.py$", "webapp", "bot"]
+ignore_missing_imports = true
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["^settings\\.py$"]
 
 
 [build-system]
