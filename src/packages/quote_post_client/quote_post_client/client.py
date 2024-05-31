@@ -32,7 +32,7 @@ class QuoteGeneratorClient:
         image_url = image_results[0].link
 
         with BytesIO(
-            await self.inner_api_client.get_image_bytes(url=image_url)
+            await self.inner_api_client.get_image_bytes(url=image_url),
         ) as image:
             image_data, image_name = self.image_text_client.process_image(
                 img_stream=image,
@@ -50,5 +50,5 @@ class QuoteGeneratorClient:
         )
 
         return await self.inner_api_client.create_post(
-            post, image_data=image_data, bucket_name="quotes-files"
+            post, image_data=image_data, bucket_name="quotes-files",
         )

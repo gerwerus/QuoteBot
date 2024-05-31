@@ -1,12 +1,11 @@
 import io
 import textwrap
-from typing import Literal
 import uuid
+from typing import Literal
 
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont
 
 from .entities import ColorChoices, FontChoicesRu, WatermarkChoices
-
 
 ImageFormats = Literal["jpeg", "png"]
 
