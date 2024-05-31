@@ -10,7 +10,11 @@ from .settings import InnerApiSettings
 
 
 class InnerApiClient:
-    def __init__(self, settings: InnerApiSettings | None = None, minio_client: MinioClient | None = None) -> None:
+    def __init__(
+        self,
+        settings: InnerApiSettings | None = None,
+        minio_client: MinioClient | None = None,
+    ) -> None:
         self.settings = settings or InnerApiSettings.initialize_from_environment()
         self.minio_client = minio_client or MinioClient(settings=settings)
 
@@ -21,12 +25,19 @@ class InnerApiClient:
         if is_published is not None:
             params["is_published"] = str(is_published)
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(self.quotes_endpoint, params=params) as response:
-                data = await response.json()
-                return TypeAdapter(list[Post]).validate_python(data)
+        async with aiohttp.ClientSession() as session, session.get(
+            self.quotes_endpoint,
+            params=params,
+        ) as response:
+            data = await response.json()
+            return TypeAdapter(list[Post]).validate_python(data)
 
-    async def create_post(self, post: PostCreate, image_data: bytes, bucket_name: str | None) -> Post:
+    async def create_post(
+        self,
+        post: PostCreate,
+        image_data: bytes,
+        bucket_name: str | None,
+    ) -> Post:
         bucket_name = bucket_name or self.minio_client.settings.MINIO_STORAGE_BUCKET
 
         with BytesIO(image_data) as image:
@@ -37,15 +48,21 @@ class InnerApiClient:
                 length=len(image_data),
             )
 
-        async with aiohttp.ClientSession(raise_for_status=True) as session:
-            async with session.post(self.quotes_endpoint, json=post.model_dump()) as response:
-                data = await response.json()
-                return TypeAdapter(Post).validate_python(data)
+        async with aiohttp.ClientSession(
+            raise_for_status=True,
+        ) as session, session.post(
+            self.quotes_endpoint,
+            json=post.model_dump(),
+        ) as response:
+            data = await response.json()
+            return TypeAdapter(Post).validate_python(data)
 
-    async def update_post(self, id: int, post: PostUpdate) -> Post:
-        async with aiohttp.ClientSession(raise_for_status=True) as session:
-            async with session.patch(
-                urljoin(self.quotes_endpoint, str(id)),
+    async def update_post(self, id_: int, post: PostUpdate) -> Post:
+        async with aiohttp.ClientSession(  # noqa SIM117
+            raise_for_status=True,
+        ) as session:
+            async with session.patch(  # noqa SIM117
+                urljoin(self.quotes_endpoint, str(id_)),
                 json=post.model_dump(exclude_unset=True),
             ) as response:
                 data = await response.json()
@@ -53,6 +70,5 @@ class InnerApiClient:
 
     @staticmethod
     async def get_image_bytes(url: str) -> bytes:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
-                return await response.read()
+        async with aiohttp.ClientSession() as session, session.get(url) as response:
+            return await response.read()

@@ -30,13 +30,19 @@ line-length = 120
 exclude = ["migrations"]
 
 [tool.ruff.lint]
-select = [ "E", "F", "A", "Q", "B", "COM", "C4", "DJ", "FIX", "PIE", "T20", "PT", "RET", "SIM", "N", "ERA", "ISC", "I"]
+select = ["E", "F", "A", "Q", "B", "COM", "C4", "DJ", "FIX", "PIE", "T20", "PT", "RET", "SIM", "N", "ERA", "ISC", "I"]
 
 [tool.ruff.lint.pep8-naming]
 classmethod-decorators = ["pydantic.field_validator"]
 
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["Depends", "fastapi.Depends", "fastapi.params.Depends"]
+
 [tool.mypy]
-exclude = ["^settings\\.py$", "webapp"]
+ignore_missing_imports = true
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["^settings\\.py$"]
 
 
 [build-system]

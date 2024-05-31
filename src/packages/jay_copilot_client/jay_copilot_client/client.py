@@ -46,9 +46,16 @@ class JayCopilotClient:
             headers=self.default_headers,
         )
         response.raise_for_status()
-        return TypeAdapter(list[Conversation]).validate_python(response.json()["conversations"])
+        return TypeAdapter(list[Conversation]).validate_python(
+            response.json()["conversations"],
+        )
 
-    def create_conversation(self, conversation_name: str, *, app_id: AppIdList | None = None) -> Conversation:
+    def create_conversation(
+        self,
+        conversation_name: str,
+        *,
+        app_id: AppIdList | None = None,
+    ) -> Conversation:
         """
         Creates a new conversation with the given name and optional app ID.
 
@@ -83,7 +90,9 @@ class JayCopilotClient:
         Retrieves a list of quote keywords.
         """
         conversation_history = self.send_message(
-            f"Выдели {keywords_amount} ключевых слова из цитаты '{quote}'. Формат вывода: KeywordsRu: ... Затем переведи ключевые слова на английский. Формат вывода: KeywordsEn: ...",
+            f"Выдели {keywords_amount} ключевых слова из цитаты '{quote}'. "
+            "Формат вывода: KeywordsRu: ... Затем переведи ключевые слова на английский. "
+            "Формат вывода: KeywordsEn: ...",
             conversation_id=ConversationIdList.quotes_conversation_id,
         )
         text = conversation_history.content[0].text.split("\n")

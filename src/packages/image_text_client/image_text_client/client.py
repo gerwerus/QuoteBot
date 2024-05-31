@@ -1,12 +1,11 @@
 import io
 import textwrap
-from typing import Literal
 import uuid
+from typing import Literal
 
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont
 
 from .entities import ColorChoices, FontChoicesRu, WatermarkChoices
-
 
 ImageFormats = Literal["jpeg", "png"]
 
@@ -24,8 +23,7 @@ class ImageTextClient:
         blurred_img = Image.new("RGBA", size)
         draw = ImageDraw.Draw(blurred_img)
         draw.text(xy=xy, text=text, fill=fill_color.value, font=font)
-        blurred_img = blurred_img.filter(ImageFilter.GaussianBlur(blur_amount))
-        return blurred_img
+        return blurred_img.filter(ImageFilter.GaussianBlur(blur_amount))
 
     def __draw_multiple_line_text(
         self,
@@ -73,8 +71,12 @@ class ImageTextClient:
 
         with Image.open(watermark.value) as watermark:
             watermark_w, watermark_h = watermark.size
-            image.paste(watermark, ((image_w - watermark_w) // 2, int(0.85 * image_h)), watermark)
-        
+            image.paste(
+                watermark,
+                ((image_w - watermark_w) // 2, int(0.85 * image_h)),
+                watermark,
+            )
+
         return image
 
     def image_place_text(
@@ -107,9 +109,9 @@ class ImageTextClient:
             )
         return image
 
-    def get_image_name(self, image: Image, format: ImageFormats) -> str:
+    def get_image_name(self, image: Image, format_: ImageFormats) -> str:
         width, height = image.size
-        return f"{str(uuid.uuid4())}_{width}x{height}.{format}"
+        return f"{str(uuid.uuid4())}_{width}x{height}.{format_}"
 
     def process_image(
         self,
@@ -117,11 +119,11 @@ class ImageTextClient:
         *,
         text: str,
         author: str | None = None,
-        fontsize: int = 32,
+        fontsize: int = 40,
         font_path: FontChoicesRu = FontChoicesRu.CENTURY_GOTHIC,
         text_color: ColorChoices = ColorChoices.WHITE,
         offset_y: int = 0,
-        format: ImageFormats = "jpeg",
+        format_: ImageFormats = "jpeg",
         watermark: WatermarkChoices | None = None,
     ) -> str:
         with Image.open(img_stream) as image:
@@ -140,5 +142,5 @@ class ImageTextClient:
                 image: Image = self.add_watermark(image, watermark=watermark)
 
             with io.BytesIO() as image_bytes:
-                image.save(image_bytes, format=format)
-                return image_bytes.getvalue(), self.get_image_name(image, format)
+                image.save(image_bytes, format_=format_)
+                return image_bytes.getvalue(), self.get_image_name(image, format_)

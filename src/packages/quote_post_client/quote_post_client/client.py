@@ -29,9 +29,11 @@ class QuoteGeneratorClient:
         quote = (await self.quote_client.get_quotes())[0]
         keywords = self.jay_copilot_client.get_quote_keywords(quote.text, 4)
         image_results = await self.unsplash_client.get_photo_by_keyword(keywords.en[0])
-        image_url = image_results[0].result.link
+        image_url = image_results[0].link
 
-        with BytesIO(await self.inner_api_client.get_image_bytes(url=image_url)) as image:
+        with BytesIO(
+            await self.inner_api_client.get_image_bytes(url=image_url),
+        ) as image:
             image_data, image_name = self.image_text_client.process_image(
                 img_stream=image,
                 text=quote.text,
@@ -47,4 +49,8 @@ class QuoteGeneratorClient:
             keyword_en=",".join(keywords.en),
         )
 
-        return await self.inner_api_client.create_post(post, image_data=image_data, bucket_name="quotes-files")
+        return await self.inner_api_client.create_post(
+            post,
+            image_data=image_data,
+            bucket_name="quotes-files",
+        )

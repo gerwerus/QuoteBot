@@ -1,15 +1,21 @@
-from pydantic import BaseModel
+from typing import Literal, Self
 
+from pydantic import BaseModel, Field, field_validator, model_validator
 
-class ImageModel(BaseModel):
-    link: str
-
-    def __init__(self, width: int, **data):
-        super().__init__(link=f"{data["raw"]}?q=75&fm=jpg&w={width}&fit=max", **data)
+Orientation = Literal["landscape", "portrait", "squarish"]
 
 
 class UnsplashModel(BaseModel):
-    result: ImageModel
+    link: str | dict = Field(alias="urls")
+    width: int | None = Field(default=None, alias="width")
 
-    def __init__(self, **data):
-        super().__init__(result=ImageModel(width=data["width"], **data["urls"]), **data)
+    @field_validator("link", mode="before")
+    @classmethod
+    def validate_link(cls, v: dict) -> str:
+        return v["raw"]
+
+    @model_validator(mode="after")
+    def configure_link(self) -> Self:
+        if self.width:
+            self.link = f"{self.link}?q=75&fm=jpg&w={self.width}&fit=max"
+        return self
