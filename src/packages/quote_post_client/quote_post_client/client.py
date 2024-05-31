@@ -50,5 +50,7 @@ class QuoteGeneratorClient:
         )
 
         return await self.inner_api_client.create_post(
-            post, image_data=image_data, bucket_name="quotes-files",
+            post,
+            image_data=image_data,
+            bucket_name="quotes-files",
         )
