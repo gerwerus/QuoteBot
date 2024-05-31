@@ -16,11 +16,17 @@ class QuoteClient:
             "key": random.randint(0, 10**6 - 1),
             **self.DEFAULT_PARAMS,
         }
-        async with aiohttp.ClientSession() as session:
-            async with session.get(self.API_URL, params=params) as response:
-                return QuoteModel.model_validate(await response.json())
+        async with aiohttp.ClientSession() as session, session.get(
+            self.API_URL,
+            params=params,
+        ) as response:
+            return QuoteModel.model_validate(await response.json())
 
-    async def get_quotes(self, amount: int = 1, lang: LangChoices = LangChoices.RUSSIAN) -> list[QuoteModel]:
+    async def get_quotes(
+        self,
+        amount: int = 1,
+        lang: LangChoices = LangChoices.RUSSIAN,
+    ) -> list[QuoteModel]:
         tasks = []
         for _ in range(amount):
             tasks.append(asyncio.create_task(self.__get_quote(lang)))
