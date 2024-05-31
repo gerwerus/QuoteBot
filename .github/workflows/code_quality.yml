@@ -28,7 +28,6 @@ jobs:
       run: |
         ruff format --check
         ruff check
-        mypy $(git ls-files '*.py')
   check_mypy:
       runs-on: ubuntu-latest
       strategy:
