@@ -52,8 +52,7 @@ services:
       context: .
       dockerfile: ci-cd/minio.Dockerfile
     volumes:
-      - ./minio_data/data/:/data
-      - ./minio_data/conf/:/root/.minio
+      - minio_data:/data
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -67,6 +66,7 @@ services:
 
 
 volumes:
+  minio_data:
   postgres_data:
 
 networks:
