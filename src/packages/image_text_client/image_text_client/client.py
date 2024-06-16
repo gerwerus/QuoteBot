@@ -7,7 +7,7 @@ from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont
 
 from .entities import ColorChoices, FontChoicesRu, WatermarkChoices
 
-ImageFormats = Literal["jpeg", "png"]
+ImageFormats = Literal["JPEG", "PNG"]
 
 
 class ImageTextClient:
@@ -111,7 +111,7 @@ class ImageTextClient:
 
     def get_image_name(self, image: Image, format_: ImageFormats) -> str:
         width, height = image.size
-        return f"{str(uuid.uuid4())}_{width}x{height}.{format_}"
+        return f"{str(uuid.uuid4())}_{width}x{height}.{format_.lower()}"
 
     def process_image(
         self,
@@ -123,7 +123,7 @@ class ImageTextClient:
         font_path: FontChoicesRu = FontChoicesRu.CENTURY_GOTHIC,
         text_color: ColorChoices = ColorChoices.WHITE,
         offset_y: int = 0,
-        format_: ImageFormats = "jpeg",
+        format_: ImageFormats = "JPEG",
         watermark: WatermarkChoices | None = None,
     ) -> str:
         with Image.open(img_stream) as image:
@@ -142,5 +142,5 @@ class ImageTextClient:
                 image: Image = self.add_watermark(image, watermark=watermark)
 
             with io.BytesIO() as image_bytes:
-                image.save(image_bytes, format_=format_)
+                image.save(image_bytes, format=format_)
                 return image_bytes.getvalue(), self.get_image_name(image, format_)

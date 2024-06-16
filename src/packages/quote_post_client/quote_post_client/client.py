@@ -54,3 +54,12 @@ class QuoteGeneratorClient:
             image_data=image_data,
             bucket_name="quotes-files",
         )
+
+
+if __name__ == "__main__":
+    import asyncio
+    from dotenv import load_dotenv
+
+    load_dotenv("C:/Users/Катя/Desktop/QuoteBot/env/.env")
+
+    asyncio.run(QuoteGeneratorClient().get_post())

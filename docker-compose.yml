@@ -20,7 +20,7 @@ services:
   pg:
     <<: *default-env
     command: -c 'fsync=off' -c 'full_page_writes=off'
-    image: postgres:16.2-alpine
+    image: postgres:15.7-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     restart: always

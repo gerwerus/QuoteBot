@@ -24,7 +24,8 @@ async def make_post(message: Message) -> None:
         post = await quote_post_client.get_post()
         logger.debug("Post (id={}) was created", post.id)
         await message.answer(f"Post (id={post.id}) was created")
-    except Exception:
+    except Exception as e:
+        logger.error("Failed to create post: {}", e, backtrace=True)
         await message.answer("Post was not created, see logs for more info.")
 
 
@@ -59,4 +60,5 @@ async def send_post(chat_id: int, *, set_is_published: bool = True) -> None:
 
 async def get_keywords_caption(keyword: str) -> str:
     keywords = keyword.split(",")
-    return "#" + " #".join(keywords[: randint(1, len(keywords))])  # randomize keywords amount
+    keywords_amount = min(randint(1, len(keywords)), 3)
+    return "#" + " #".join(keywords[: keywords_amount])  # randomize keywords amount
