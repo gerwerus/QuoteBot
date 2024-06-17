@@ -34,6 +34,17 @@ async def view_post(message: Message) -> None:
     await send_post(chat_id=message.chat.id, set_is_published=False)
 
 
+@router.message(Command("skip_post"), AdminFilter())
+async def skip_post(message: Message) -> None:
+    posts = await inner_api_client.get_posts(is_published=False)
+    if not posts:
+        raise ValueError("No posts to be sent")
+
+    post = posts[0]
+    await inner_api_client.update_post(id=post.id, post=PostUpdate(is_published=True))
+    await message.answer(f"Post(id={post.id}) was skipped")
+
+
 @router.message(Command("send_post"), AdminFilter())
 async def force_send_post(message: Message) -> None:
     await send_post(chat_id=QUOTE_GROUP_ID)
