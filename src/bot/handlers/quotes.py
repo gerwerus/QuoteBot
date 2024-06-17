@@ -41,7 +41,7 @@ async def skip_post(message: Message) -> None:
         raise ValueError("No posts to be sent")
 
     post = posts[0]
-    await inner_api_client.update_post(id=post.id, post=PostUpdate(is_published=True))
+    await inner_api_client.update_post(post.id, post=PostUpdate(is_published=True))
     await message.answer(f"Post(id={post.id}) was skipped")
 
 
@@ -66,7 +66,7 @@ async def send_post(chat_id: int, *, set_is_published: bool = True) -> None:
     await bot.send_photo(chat_id=chat_id, photo=image, caption=await get_keywords_caption(post.keyword_ru))
 
     if set_is_published:
-        await inner_api_client.update_post(id=post.id, post=PostUpdate(is_published=True))
+        await inner_api_client.update_post(post.id, post=PostUpdate(is_published=True))
 
 
 async def get_keywords_caption(keyword: str) -> str:
