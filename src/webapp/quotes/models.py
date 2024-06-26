@@ -21,3 +21,15 @@ class Post(Base):
 
     def __str__(self) -> str:
         return f"<{self.__class__.__name__}> id={self.id}"
+
+
+class Quiz(Base):
+    __tablename__ = f"{app_name}_quiz"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    text: Mapped[str] = mapped_column(Text)
+    author: Mapped[str] = mapped_column(String(length=128))
+    is_published: Mapped[bool] = mapped_column(default=False)
+    
+    def __str__(self) -> str:
+        return f"<{self.__class__.__name__}> id={self.id}"

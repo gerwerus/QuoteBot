@@ -41,3 +41,25 @@ class PostSchemaUpdate(PostSchemaCreate):
 
 class PostQueryParams(BaseModel):
     is_published: bool | None = None
+
+
+class PaginationQueryParams(BaseModel):
+    limit: int = 100
+    offset: int = 0
+
+
+class QuizSchemaCreate(BaseModel):
+    text: str
+    author: str
+
+
+class QuizSchemaRead(QuizSchemaCreate):
+    id: int
+    is_published: bool
+    answers: list[str] | None = None
+
+
+class QuizSchemaUpdate(QuizSchemaCreate):
+    text: str | None = None
+    author: str | None = None
+    is_published: bool | None = None
