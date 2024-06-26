@@ -59,7 +59,7 @@ class QuizSchemaRead(QuizSchemaCreate):
     answers: list[str] | None = None
 
 
-class QuizSchemaUpdate(QuizSchemaCreate):
+class QuizSchemaUpdate(BaseModel):
     text: str | None = None
     author: str | None = None
     is_published: bool | None = None

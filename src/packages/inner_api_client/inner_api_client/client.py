@@ -5,7 +5,7 @@ import aiohttp
 from minio_client import MinioClient
 from pydantic import TypeAdapter
 
-from .entities import Post, PostCreate, PostUpdate
+from .entities import Post, PostCreate, PostUpdate, Quiz, QuizCreate, QuizUpdate
 from .settings import InnerApiSettings
 
 
@@ -19,9 +19,10 @@ class InnerApiClient:
         self.minio_client = minio_client or MinioClient(settings=settings)
 
         self.quotes_endpoint = urljoin(self.settings.BASE_URL, "quotes/")
+        self.quizes_endpoint = urljoin(self.quotes_endpoint, "quizes/")
 
-    async def get_posts(self, is_published: bool | None = None) -> list[Post]:
-        params = {}
+    async def get_posts(self, is_published: bool | None = None, limit: int = 1, offset: int = 0) -> list[Post]:
+        params = {"limit": limit, "offset": offset}
         if is_published is not None:
             params["is_published"] = str(is_published)
 
@@ -67,6 +68,42 @@ class InnerApiClient:
             ) as response:
                 data = await response.json()
                 return TypeAdapter(Post).validate_python(data)
+    
+    async def get_quizes(self, is_published: bool | None = None, limit: int = 1, offset: int = 0) -> list[Quiz]:
+        params = params = {"limit": limit, "offset": offset}
+        if is_published is not None:
+            params["is_published"] = str(is_published)
+
+        async with aiohttp.ClientSession() as session, session.get(
+            self.quizes_endpoint,
+            params=params,
+        ) as response:
+            data = await response.json()
+            return TypeAdapter(list[Quiz]).validate_python(data)
+
+    async def create_quiz(
+        self,
+        quiz: QuizCreate,
+    ) -> Quiz:
+        async with aiohttp.ClientSession(
+            raise_for_status=True,
+        ) as session, session.post(
+            self.quotes_endpoint,
+            json=quiz.model_dump(),
+        ) as response:
+            data = await response.json()
+            return TypeAdapter(Quiz).validate_python(data)
+
+    async def update_quiz(self, id_: int, quiz: QuizUpdate) -> Quiz:
+        async with aiohttp.ClientSession(  # noqa SIM117
+            raise_for_status=True,
+        ) as session:
+            async with session.patch(  # noqa SIM117
+                urljoin(self.quotes_endpoint, str(id_)),
+                json=quiz.model_dump(exclude_unset=True),
+            ) as response:
+                data = await response.json()
+                return TypeAdapter(Quiz).validate_python(data)
 
     @staticmethod
     async def get_image_bytes(url: str) -> bytes:
