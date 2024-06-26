@@ -19,7 +19,7 @@ class InnerApiClient:
         self.minio_client = minio_client or MinioClient(settings=settings)
 
         self.quotes_endpoint = urljoin(self.settings.BASE_URL, "quotes/")
-        self.quizes_endpoint = urljoin(self.quotes_endpoint, "quizes/")
+        self.quizes_endpoint = urljoin(self.quotes_endpoint, "quiz/")
 
     async def get_posts(self, is_published: bool | None = None, limit: int = 1, offset: int = 0) -> list[Post]:
         params = {"limit": limit, "offset": offset}
@@ -88,7 +88,7 @@ class InnerApiClient:
         async with aiohttp.ClientSession(
             raise_for_status=True,
         ) as session, session.post(
-            self.quotes_endpoint,
+            self.quizes_endpoint,
             json=quiz.model_dump(),
         ) as response:
             data = await response.json()
@@ -99,7 +99,7 @@ class InnerApiClient:
             raise_for_status=True,
         ) as session:
             async with session.patch(  # noqa SIM117
-                urljoin(self.quotes_endpoint, str(id_)),
+                urljoin(self.quizes_endpoint, str(id_)),
                 json=quiz.model_dump(exclude_unset=True),
             ) as response:
                 data = await response.json()

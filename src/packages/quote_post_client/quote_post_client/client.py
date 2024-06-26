@@ -3,7 +3,7 @@ from io import BytesIO
 from image_text_client import ImageTextClient
 from image_text_client.entities import WatermarkChoices
 from inner_api_client import InnerApiClient
-from inner_api_client.entities import Post, PostCreate
+from inner_api_client.entities import Post, PostCreate, Quiz, QuizCreate
 from jay_copilot_client import JayCopilotClient
 from quote_client import QuoteClient
 from unsplash_client import UnsplashClient
@@ -54,7 +54,11 @@ class QuoteGeneratorClient:
             image_data=image_data,
             bucket_name="quotes-files",
         )
-
+    
+    async def get_quiz(self) -> Quiz:
+        quote = (await self.quote_client.get_quotes())[0]
+        quiz = QuizCreate(text=quote.text, author=quote.author)
+        return await self.inner_api_client.create_quiz(quiz)
 
 if __name__ == "__main__":
     import asyncio
@@ -62,4 +66,4 @@ if __name__ == "__main__":
 
     load_dotenv("C:/Users/Катя/Desktop/QuoteBot/env/.env")
 
-    asyncio.run(QuoteGeneratorClient().get_post())
+    asyncio.run(QuoteGeneratorClient().get_quiz())
