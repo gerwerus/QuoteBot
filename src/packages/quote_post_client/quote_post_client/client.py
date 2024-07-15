@@ -54,14 +54,16 @@ class QuoteGeneratorClient:
             image_data=image_data,
             bucket_name="quotes-files",
         )
-    
+
     async def get_quiz(self) -> Quiz:
         quote = (await self.quote_client.get_quotes())[0]
         quiz = QuizCreate(text=quote.text, author=quote.author)
         return await self.inner_api_client.create_quiz(quiz)
 
+
 if __name__ == "__main__":
     import asyncio
+
     from dotenv import load_dotenv
 
     load_dotenv("C:/Users/Катя/Desktop/QuoteBot/env/.env")

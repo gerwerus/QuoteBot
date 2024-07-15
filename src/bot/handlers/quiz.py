@@ -7,7 +7,7 @@ from inner_api_client.entities import QuizUpdate
 from loguru import logger
 
 from ..config.constants import QUOTE_GROUP_ID
-from ..config.settings import bot, quote_post_client, inner_api_client
+from ..config.settings import bot, inner_api_client, quote_post_client
 from ..filters.admin import AdminFilter
 
 router = Router(name="quiz")
@@ -54,9 +54,15 @@ async def send_quiz(chat_id: int, *, set_is_published: bool = True) -> None:
     options.append(quiz.author)
     shuffle(options)
     answer_index = options.index(quiz.author)
-    
-    await bot.send_poll(chat_id=chat_id, question=f"Кто является автором цитаты? {quiz.text}", 
-        options=options, is_anonymous=True, type="quiz", correct_option_id=answer_index,)
+
+    await bot.send_poll(
+        chat_id=chat_id,
+        question=f"Кто является автором цитаты? {quiz.text}",
+        options=options,
+        is_anonymous=True,
+        type="quiz",
+        correct_option_id=answer_index,
+    )
 
     if set_is_published:
         await inner_api_client.update_quiz(quiz.id, quiz=QuizUpdate(is_published=True))

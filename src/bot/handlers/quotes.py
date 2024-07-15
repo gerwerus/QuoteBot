@@ -7,12 +7,11 @@ from inner_api_client.entities import PostUpdate
 from loguru import logger
 
 from ..config.constants import QUOTE_GROUP_ID
-from ..config.settings import bot, quote_post_client, inner_api_client
+from ..config.settings import bot, inner_api_client, quote_post_client
 from ..filters.admin import AdminFilter
 
 router = Router(name="quotes")
 randint = SystemRandom().randint
-
 
 
 @router.message(Command("make_post"), AdminFilter())
@@ -69,4 +68,4 @@ async def send_post(chat_id: int, *, set_is_published: bool = True) -> None:
 async def get_keywords_caption(keyword: str) -> str:
     keywords = keyword.split(",")
     keywords_amount = min(randint(1, len(keywords)), 3)
-    return "#" + " #".join(keywords[: keywords_amount])  # randomize keywords amount
+    return "#" + " #".join(keywords[:keywords_amount])  # randomize keywords amount

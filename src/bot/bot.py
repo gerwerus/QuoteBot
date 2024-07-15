@@ -8,10 +8,10 @@ from apscheduler.triggers.cron import CronTrigger
 
 from .config.constants import QUOTE_GROUP_ID, TIMEZONE
 from .config.settings import bot
-from .handlers.quotes import router as quotes_router
-from .handlers.quotes import send_post
 from .handlers.quiz import router as quiz_router
 from .handlers.quiz import send_quiz
+from .handlers.quotes import router as quotes_router
+from .handlers.quotes import send_post
 
 logging.basicConfig(level=logging.INFO)
 

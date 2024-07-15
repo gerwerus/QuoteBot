@@ -1,13 +1,21 @@
-from pydantic import TypeAdapter
 from config.database import get_async_session
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import TypeAdapter
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-
 from .models import Post, Quiz
-from .schemas import PaginationQueryParams, PostQueryParams, PostSchemaCreate, PostSchemaRead, PostSchemaUpdate, QuizSchemaCreate, QuizSchemaRead, QuizSchemaUpdate
-from  .utils import set_quiz_answers
+from .schemas import (
+    PaginationQueryParams,
+    PostQueryParams,
+    PostSchemaCreate,
+    PostSchemaRead,
+    PostSchemaUpdate,
+    QuizSchemaCreate,
+    QuizSchemaRead,
+    QuizSchemaUpdate,
+)
+from .utils import set_quiz_answers
 
 router = APIRouter(
     prefix="/quotes",
@@ -98,4 +106,3 @@ async def update_quiz(
     await session.commit()
     await session.refresh(quiz_to_update)
     return quiz_to_update
-

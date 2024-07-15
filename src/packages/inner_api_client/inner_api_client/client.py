@@ -68,7 +68,7 @@ class InnerApiClient:
             ) as response:
                 data = await response.json()
                 return TypeAdapter(Post).validate_python(data)
-    
+
     async def get_quizes(self, is_published: bool | None = None, limit: int = 1, offset: int = 0) -> list[Quiz]:
         params = params = {"limit": limit, "offset": offset}
         if is_published is not None:
