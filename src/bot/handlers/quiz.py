@@ -54,10 +54,12 @@ async def send_quiz(chat_id: int, *, set_is_published: bool = True) -> None:
     options.append(quiz.author)
     shuffle(options)
     answer_index = options.index(quiz.author)
+    emozi = "🏔🤔🧐❓👉🧠👤🌚🗿"
+    shuffle(emozi)
 
     await bot.send_poll(
         chat_id=chat_id,
-        question=f"Кто является автором цитаты? {quiz.text}",
+        question=f'{emozi[0]}Кто является автором цитаты? «{quiz.text}»',
         options=options,
         is_anonymous=True,
         type="quiz",
