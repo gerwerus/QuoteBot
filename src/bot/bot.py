@@ -10,6 +10,8 @@ from .config.constants import QUOTE_GROUP_ID, TIMEZONE
 from .config.settings import bot
 from .handlers.quotes import router as quotes_router
 from .handlers.quotes import send_post
+from .handlers.quiz import router as quiz_router
+from .handlers.quiz import send_quiz
 
 logging.basicConfig(level=logging.INFO)
 
@@ -23,13 +25,14 @@ def configure_scheduled_tasks(scheduler: AsyncIOScheduler) -> None:
         ],
     )
     scheduler.add_job(send_post, trigger=trigger, kwargs={"chat_id": QUOTE_GROUP_ID})
+    scheduler.add_job(send_quiz, trigger=CronTrigger(hour=13, timezone=TIMEZONE), kwargs={"chat_id": QUOTE_GROUP_ID})
 
 
 async def main() -> None:
     dp = Dispatcher()
     scheduler = AsyncIOScheduler(timezone=TIMEZONE)
 
-    dp.include_routers(quotes_router)
+    dp.include_routers(quotes_router, quiz_router)
     configure_scheduled_tasks(scheduler)
 
     scheduler.start()

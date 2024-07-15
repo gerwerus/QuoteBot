@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from typing import Self
 
 from aiogram import Bot
+from inner_api_client import InnerApiClient
+from quote_post_client import QuoteGeneratorClient
 
 
 @dataclass
@@ -20,3 +22,5 @@ class BotSettings:
 
 settings = BotSettings.initialize_from_environment()
 bot = Bot(token=settings.TOKEN)
+inner_api_client = InnerApiClient()
+quote_post_client = QuoteGeneratorClient()

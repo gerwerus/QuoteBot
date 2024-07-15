@@ -3,19 +3,16 @@ from random import SystemRandom
 from aiogram import Router
 from aiogram.filters.command import Command
 from aiogram.types import BufferedInputFile, Message
-from inner_api_client import InnerApiClient
 from inner_api_client.entities import PostUpdate
 from loguru import logger
-from quote_post_client import QuoteGeneratorClient
 
 from ..config.constants import QUOTE_GROUP_ID
-from ..config.settings import bot
+from ..config.settings import bot, quote_post_client, inner_api_client
 from ..filters.admin import AdminFilter
 
 router = Router(name="quotes")
 randint = SystemRandom().randint
-inner_api_client = InnerApiClient()
-quote_post_client = QuoteGeneratorClient()
+
 
 
 @router.message(Command("make_post"), AdminFilter())
