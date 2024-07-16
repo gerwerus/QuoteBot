@@ -1,4 +1,4 @@
-from random import SystemRandom, shuffle
+from random import SystemRandom
 
 from aiogram import Router
 from aiogram.filters.command import Command
@@ -12,6 +12,8 @@ from ..filters.admin import AdminFilter
 
 router = Router(name="quiz")
 randint = SystemRandom().randint
+choice = SystemRandom().choice
+shuffle = SystemRandom().shuffle
 
 
 @router.message(Command("make_quiz"), AdminFilter())
@@ -55,11 +57,10 @@ async def send_quiz(chat_id: int, *, set_is_published: bool = True) -> None:
     shuffle(options)
     answer_index = options.index(quiz.author)
     emozi = "🏔🤔🧐❓👉🧠👤🌚🗿"
-    shuffle(emozi)
 
     await bot.send_poll(
         chat_id=chat_id,
-        question=f'{emozi[0]}Кто является автором цитаты? «{quiz.text}»',
+        question=f'{choice(emozi)}Кто является автором цитаты? «{quiz.text}»',
         options=options,
         is_anonymous=True,
         type="quiz",
