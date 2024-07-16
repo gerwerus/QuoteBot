@@ -74,7 +74,7 @@ async def get_quizes(
     query = select(Quiz)
     for key, value in query_params.model_dump().items():
         if value is not None:
-            query = query.where(getattr(Post, key) == value)
+            query = query.where(getattr(Quiz, key) == value)
     query = query.limit(pagination_query_params.limit).offset(pagination_query_params.offset)
     result = await session.execute(query)
     quizes = TypeAdapter(list[QuizSchemaRead]).validate_python(result.scalars().all(), from_attributes=True)
