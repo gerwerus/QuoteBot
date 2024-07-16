@@ -29,10 +29,11 @@ async def get_quotes(
     pagination_query_params: PaginationQueryParams = Depends(),
     session: AsyncSession = Depends(get_async_session),
 ) -> list[PostSchemaRead]:
-    query = select(Post).limit(pagination_query_params.limit).offset(pagination_query_params.offset)
+    query = select(Post)
     for key, value in query_params.model_dump().items():
         if value is not None:
             query = query.where(getattr(Post, key) == value)
+    query = query.limit(pagination_query_params.limit).offset(pagination_query_params.offset)
     result = await session.execute(query)
     return result.scalars().all()
 
@@ -70,10 +71,11 @@ async def get_quizes(
     pagination_query_params: PaginationQueryParams = Depends(),
     session: AsyncSession = Depends(get_async_session),
 ) -> list[QuizSchemaRead]:
-    query = select(Quiz).limit(pagination_query_params.limit).offset(pagination_query_params.offset)
+    query = select(Quiz)
     for key, value in query_params.model_dump().items():
         if value is not None:
             query = query.where(getattr(Post, key) == value)
+    query = query.limit(pagination_query_params.limit).offset(pagination_query_params.offset)
     result = await session.execute(query)
     quizes = TypeAdapter(list[QuizSchemaRead]).validate_python(result.scalars().all(), from_attributes=True)
     for quiz in quizes:
