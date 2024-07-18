@@ -12,6 +12,8 @@ from .handlers.quiz import router as quiz_router
 from .handlers.quiz import send_quiz
 from .handlers.quotes import router as quotes_router
 from .handlers.quotes import send_post
+from .handlers.base_commands import router as base_commands_router
+from .services.command_settings import set_default_commands
 
 logging.basicConfig(level=logging.INFO)
 
@@ -32,10 +34,11 @@ async def main() -> None:
     dp = Dispatcher()
     scheduler = AsyncIOScheduler(timezone=TIMEZONE)
 
-    dp.include_routers(quotes_router, quiz_router)
+    dp.include_routers(base_commands_router, quotes_router, quiz_router)
     configure_scheduled_tasks(scheduler)
 
     scheduler.start()
+    await set_default_commands(bot)
     await dp.start_polling(bot)
 
 
