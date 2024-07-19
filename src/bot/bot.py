@@ -5,6 +5,7 @@ from aiogram import Dispatcher
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.combining import OrTrigger
 from apscheduler.triggers.cron import CronTrigger
+from bot.handlers.quotes_multiple_images import send_post_multiple_images
 
 from .config.constants import QUOTE_GROUP_ID, TIMEZONE
 from .config.settings import bot
@@ -21,11 +22,19 @@ def configure_scheduled_tasks(scheduler: AsyncIOScheduler) -> None:
         [
             CronTrigger(hour=6, timezone=TIMEZONE),
             CronTrigger(hour=10, timezone=TIMEZONE),
-            CronTrigger(hour=18, timezone=TIMEZONE),
         ],
     )
     scheduler.add_job(send_post, trigger=trigger, kwargs={"chat_id": QUOTE_GROUP_ID})
-    scheduler.add_job(send_quiz, trigger=CronTrigger(hour=13, timezone=TIMEZONE), kwargs={"chat_id": QUOTE_GROUP_ID})
+    scheduler.add_job(
+        send_quiz,
+        trigger=CronTrigger(hour=13, timezone=TIMEZONE),
+        kwargs={"chat_id": QUOTE_GROUP_ID},
+    )
+    scheduler.add_job(
+        send_post_multiple_images,
+        trigger=CronTrigger(hour=18, timezone=TIMEZONE),
+        kwargs={"chat_id": QUOTE_GROUP_ID},
+    )
 
 
 async def main() -> None:

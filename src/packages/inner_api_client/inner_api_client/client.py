@@ -5,7 +5,17 @@ import aiohttp
 from minio_client import MinioClient
 from pydantic import TypeAdapter
 
-from .entities import Post, PostCreate, PostUpdate, Quiz, QuizCreate, QuizUpdate
+from .entities import (
+    Post,
+    PostCreate,
+    PostMultipleImage,
+    PostMultipleImageCreate,
+    PostMultipleImageUpdate,
+    PostUpdate,
+    Quiz,
+    QuizCreate,
+    QuizUpdate,
+)
 from .settings import InnerApiSettings
 
 
@@ -19,9 +29,18 @@ class InnerApiClient:
         self.minio_client = minio_client or MinioClient(settings=settings)
 
         self.quotes_endpoint = urljoin(self.settings.BASE_URL, "quotes/")
-        self.quizes_endpoint = urljoin(self.quotes_endpoint, "quiz/")
+        self.quotes_multiple_images_endpoint = urljoin(
+            self.settings.BASE_URL,
+            "quotes/post_multiple_images/",
+        )
+        self.quizzes_endpoint = urljoin(self.quotes_endpoint, "quiz/")
 
-    async def get_posts(self, is_published: bool | None = None, limit: int = 1, offset: int = 0) -> list[Post]:
+    async def get_posts(
+        self,
+        is_published: bool | None = None,
+        limit: int = 1,
+        offset: int = 0,
+    ) -> list[Post]:
         params = {"limit": limit, "offset": offset}
         if is_published is not None:
             params["is_published"] = str(is_published)
@@ -69,13 +88,59 @@ class InnerApiClient:
                 data = await response.json()
                 return TypeAdapter(Post).validate_python(data)
 
-    async def get_quizes(self, is_published: bool | None = None, limit: int = 1, offset: int = 0) -> list[Quiz]:
+    async def create_post_multiple_images(
+        self,
+        post: PostMultipleImageCreate,
+    ) -> PostMultipleImage:
+        async with aiohttp.ClientSession(
+            raise_for_status=True,
+        ) as session, session.post(
+            self.quotes_multiple_images_endpoint,
+            json=post.model_dump(),
+        ) as response:
+            data = await response.json()
+            return TypeAdapter(PostMultipleImage).validate_python(data)
+
+    async def get_posts_multiple_images(
+        self,
+        is_published: bool | None = None,
+        limit: int = 1,
+        offset: int = 0,
+    ) -> list[PostMultipleImage]:
+        params = {"limit": limit, "offset": offset}
+        if is_published is not None:
+            params["is_published"] = str(is_published)
+
+        async with aiohttp.ClientSession() as session, session.get(
+            self.quotes_multiple_images_endpoint,
+            params=params,
+        ) as response:
+            data = await response.json()
+            return TypeAdapter(list[PostMultipleImage]).validate_python(data)
+
+    async def update_post_multiple_images(self, id_: int, post: PostMultipleImageUpdate) -> PostMultipleImage:
+        async with aiohttp.ClientSession(  # noqa SIM117
+            raise_for_status=True,
+        ) as session:
+            async with session.patch(  # noqa SIM117
+                urljoin(self.quotes_endpoint, str(id_)),
+                json=post.model_dump(exclude_unset=True),
+            ) as response:
+                data = await response.json()
+                return TypeAdapter(PostMultipleImage).validate_python(data)
+
+    async def get_quizzes(
+        self,
+        is_published: bool | None = None,
+        limit: int = 1,
+        offset: int = 0,
+    ) -> list[Quiz]:
         params = params = {"limit": limit, "offset": offset}
         if is_published is not None:
             params["is_published"] = str(is_published)
 
         async with aiohttp.ClientSession() as session, session.get(
-            self.quizes_endpoint,
+            self.quizzes_endpoint,
             params=params,
         ) as response:
             data = await response.json()
@@ -88,7 +153,7 @@ class InnerApiClient:
         async with aiohttp.ClientSession(
             raise_for_status=True,
         ) as session, session.post(
-            self.quizes_endpoint,
+            self.quizzes_endpoint,
             json=quiz.model_dump(),
         ) as response:
             data = await response.json()
@@ -99,7 +164,7 @@ class InnerApiClient:
             raise_for_status=True,
         ) as session:
             async with session.patch(  # noqa SIM117
-                urljoin(self.quizes_endpoint, str(id_)),
+                urljoin(self.quizzes_endpoint, str(id_)),
                 json=quiz.model_dump(exclude_unset=True),
             ) as response:
                 data = await response.json()

@@ -57,9 +57,15 @@ async def send_post(chat_id: int, *, set_is_published: bool = True) -> None:
 
     image = BufferedInputFile(
         file=await inner_api_client.get_image_bytes(url=post.image_with_text),
-        filename=inner_api_client.minio_client.get_filename_from_url(url=post.image_with_text),
+        filename=inner_api_client.minio_client.get_filename_from_url(
+            url=post.image_with_text,
+        ),
     )
-    await bot.send_photo(chat_id=chat_id, photo=image, caption=await get_keywords_caption(post.keyword_ru))
+    await bot.send_photo(
+        chat_id=chat_id,
+        photo=image,
+        caption=await get_keywords_caption(post.keyword_ru),
+    )
 
     if set_is_published:
         await inner_api_client.update_post(post.id, post=PostUpdate(is_published=True))

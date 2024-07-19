@@ -40,3 +40,25 @@ class QuizUpdate(BaseModel):
     text: str | None = None
     author: str | None = None
     is_published: bool | None = None
+
+
+class ImageModel(BaseModel):
+    image_url: str
+
+
+class PostMultipleImageCreate(BaseModel):
+    text: str
+    author: str
+    image_urls: list[ImageModel]
+    is_published: bool = False
+
+
+class PostMultipleImageUpdate(BaseModel):
+    text: str
+    author: str
+    image_urls: list[ImageModel]
+    is_published: bool | None = None
+
+
+class PostMultipleImage(PostMultipleImageCreate):
+    id: int

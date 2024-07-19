@@ -3,8 +3,17 @@ from io import BytesIO
 from image_text_client import ImageTextClient
 from image_text_client.entities import WatermarkChoices
 from inner_api_client import InnerApiClient
-from inner_api_client.entities import Post, PostCreate, Quiz, QuizCreate
+from inner_api_client.entities import (
+    ImageModel,
+    Post,
+    PostCreate,
+    PostMultipleImage,
+    PostMultipleImageCreate,
+    Quiz,
+    QuizCreate,
+)
 from jay_copilot_client import JayCopilotClient
+from pydantic import TypeAdapter
 from quote_client import QuoteClient
 from unsplash_client import UnsplashClient
 
@@ -55,17 +64,25 @@ class QuoteGeneratorClient:
             bucket_name="quotes-files",
         )
 
+    async def get_post_multiple_images(self) -> PostMultipleImage:
+        quote = (await self.quote_client.get_quotes())[0]
+        keywords = self.jay_copilot_client.get_quote_keywords(quote.text, 4)
+        image_results = await self.unsplash_client.get_photo_by_keyword(
+            keyword=keywords.en[0],
+            amount=5,
+        )
+        image_urls = TypeAdapter(list[ImageModel]).validate_python(
+            [{"image_url": image.link} for image in image_results],
+        )
+        post = PostMultipleImageCreate(
+            text=quote.text,
+            author=quote.author,
+            image_urls=image_urls,
+        )
+        return await self.inner_api_client.create_post_multiple_images(post)
+
     async def get_quiz(self) -> Quiz:
         quote = (await self.quote_client.get_quotes())[0]
         quiz = QuizCreate(text=quote.text, author=quote.author)
         return await self.inner_api_client.create_quiz(quiz)
 
-
-if __name__ == "__main__":
-    import asyncio
-
-    from dotenv import load_dotenv
-
-    load_dotenv("C:/Users/Катя/Desktop/QuoteBot/env/.env")
-
-    asyncio.run(QuoteGeneratorClient().get_quiz())

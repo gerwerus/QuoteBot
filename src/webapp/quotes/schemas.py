@@ -63,3 +63,31 @@ class QuizSchemaUpdate(BaseModel):
     text: str | None = None
     author: str | None = None
     is_published: bool | None = None
+
+
+class ImageSchema(BaseModel):
+    image_url: str
+
+
+class MultipleImageSchema(BaseModel):
+    image_urls: list[ImageSchema]
+
+
+class PostMultipleImageSchema(BaseModel):
+    text: str
+    author: str
+
+
+class PostMultipleImageSchemaCreate(MultipleImageSchema, PostMultipleImageSchema):
+    pass
+
+
+class PostMultipleImageSchemaRead(PostMultipleImageSchemaCreate):
+    id: int
+    is_published: bool
+
+
+class PostMultipleImageSchemaUpdate(BaseModel):
+    text: str | None = None
+    author: str | None = None
+    is_published: bool | None = None
