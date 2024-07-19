@@ -72,7 +72,7 @@ async def send_post_multiple_images(
     images = [
         BufferedInputFile(
             file=await inner_api_client.get_image_bytes(url=img.image_url),
-            filename=f"maybe_name_should_be_different.jpg",
+            filename="maybe_name_should_be_different.jpg",
         )
         for img in post.image_urls
     ]
