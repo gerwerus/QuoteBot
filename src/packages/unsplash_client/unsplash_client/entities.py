@@ -6,7 +6,7 @@ Orientation = Literal["landscape", "portrait", "squarish"]
 
 
 class UnsplashModel(BaseModel):
-    link: str | dict = Field(alias="urls")
+    link: str = Field(alias="urls")
     width: int | None = Field(default=None, alias="width")
 
     @field_validator("link", mode="before")

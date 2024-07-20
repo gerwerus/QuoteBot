@@ -85,4 +85,3 @@ class QuoteGeneratorClient:
         quote = (await self.quote_client.get_quotes())[0]
         quiz = QuizCreate(text=quote.text, author=quote.author)
         return await self.inner_api_client.create_quiz(quiz)
-

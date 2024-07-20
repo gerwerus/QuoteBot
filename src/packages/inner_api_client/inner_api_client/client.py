@@ -26,7 +26,7 @@ class InnerApiClient:
         minio_client: MinioClient | None = None,
     ) -> None:
         self.settings = settings or InnerApiSettings.initialize_from_environment()
-        self.minio_client = minio_client or MinioClient(settings=settings)
+        self.minio_client = minio_client or MinioClient()
 
         self.quotes_endpoint = urljoin(self.settings.BASE_URL, "quotes/")
         self.quotes_multiple_images_endpoint = urljoin(
@@ -41,7 +41,7 @@ class InnerApiClient:
         limit: int = 1,
         offset: int = 0,
     ) -> list[Post]:
-        params = {"limit": limit, "offset": offset}
+        params: dict[str, int | str] = {"limit": limit, "offset": offset}
         if is_published is not None:
             params["is_published"] = str(is_published)
 
@@ -107,7 +107,7 @@ class InnerApiClient:
         limit: int = 1,
         offset: int = 0,
     ) -> list[PostMultipleImage]:
-        params = {"limit": limit, "offset": offset}
+        params: dict[str, int | str] = {"limit": limit, "offset": offset}
         if is_published is not None:
             params["is_published"] = str(is_published)
 
@@ -118,12 +118,16 @@ class InnerApiClient:
             data = await response.json()
             return TypeAdapter(list[PostMultipleImage]).validate_python(data)
 
-    async def update_post_multiple_images(self, id_: int, post: PostMultipleImageUpdate) -> PostMultipleImage:
+    async def update_post_multiple_images(
+        self,
+        id_: int,
+        post: PostMultipleImageUpdate,
+    ) -> PostMultipleImage:
         async with aiohttp.ClientSession(  # noqa SIM117
             raise_for_status=True,
         ) as session:
             async with session.patch(  # noqa SIM117
-                urljoin(self.quotes_endpoint, str(id_)),
+                urljoin(self.quotes_multiple_images_endpoint, str(id_)),
                 json=post.model_dump(exclude_unset=True),
             ) as response:
                 data = await response.json()
@@ -135,7 +139,7 @@ class InnerApiClient:
         limit: int = 1,
         offset: int = 0,
     ) -> list[Quiz]:
-        params = params = {"limit": limit, "offset": offset}
+        params: dict[str, int | str] = {"limit": limit, "offset": offset}
         if is_published is not None:
             params["is_published"] = str(is_published)
 

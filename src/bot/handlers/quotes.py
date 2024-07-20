@@ -64,11 +64,7 @@ async def send_post(chat_id: int, *, set_is_published: bool = True) -> None:
             url=post.image_with_text,
         ),
     )
-    await bot.send_photo(
-        chat_id=chat_id,
-        photo=image,
-        caption=await get_keywords_caption(post.keyword_ru),
-    )
+    await bot.send_photo(chat_id=chat_id, photo=image, caption=await get_keywords_caption(post.keyword_ru))
 
     if set_is_published:
         await inner_api_client.update_post(post.id, post=PostUpdate(is_published=True))

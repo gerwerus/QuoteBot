@@ -23,10 +23,7 @@ from .schemas import (
 )
 from .utils import set_quiz_answers
 
-router = APIRouter(
-    prefix="/quotes",
-    tags=["Quotes"],
-)
+router = APIRouter(prefix="/quotes", tags=["Quotes"])
 
 
 @router.get("")
@@ -39,18 +36,13 @@ async def get_quotes(
     for key, value in query_params.model_dump().items():
         if value is not None:
             query = query.where(getattr(Post, key) == value)
-    query = query.limit(pagination_query_params.limit).offset(
-        pagination_query_params.offset,
-    )
+    query = query.limit(pagination_query_params.limit).offset(pagination_query_params.offset)
     result = await session.execute(query)
     return result.scalars().all()
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)
-async def create_quote(
-    quote: PostSchemaCreate,
-    session: AsyncSession = Depends(get_async_session),
-) -> PostSchemaRead:
+async def create_quote(quote: PostSchemaCreate, session: AsyncSession = Depends(get_async_session)) -> PostSchemaRead:
     new_quote = Post(**quote.model_dump())
     session.add(new_quote)
     await session.commit()
@@ -89,24 +81,16 @@ async def get_quizzes(
     for key, value in query_params.model_dump().items():
         if value is not None:
             query = query.where(getattr(Quiz, key) == value)
-    query = query.limit(pagination_query_params.limit).offset(
-        pagination_query_params.offset,
-    )
+    query = query.limit(pagination_query_params.limit).offset(pagination_query_params.offset)
     result = await session.execute(query)
-    quizzes = TypeAdapter(list[QuizSchemaRead]).validate_python(
-        result.scalars().all(),
-        from_attributes=True,
-    )
+    quizzes = TypeAdapter(list[QuizSchemaRead]).validate_python(result.scalars().all(), from_attributes=True)
     for quiz in quizzes:
         await set_quiz_answers(quiz, session)
     return quizzes
 
 
 @router.post("/quiz", status_code=status.HTTP_201_CREATED)
-async def create_quiz(
-    quiz: QuizSchemaCreate,
-    session: AsyncSession = Depends(get_async_session),
-) -> QuizSchemaRead:
+async def create_quiz(quiz: QuizSchemaCreate, session: AsyncSession = Depends(get_async_session)) -> QuizSchemaRead:
     new_quiz = Quiz(**quiz.model_dump())
     session.add(new_quiz)
     await session.commit()
@@ -156,47 +140,48 @@ async def get_post_multiple_images(
 
 @router.post("/post_multiple_images", status_code=status.HTTP_201_CREATED)
 async def create_post_multiple_images(
-    quote: PostMultipleImageSchemaCreate,
+    post_multiple_image: PostMultipleImageSchemaCreate,
     session: AsyncSession = Depends(get_async_session),
 ) -> PostMultipleImageSchemaRead:
     async with session.begin():
-        quote_schema = PostMultipleImageSchema.model_validate(quote.model_dump())
-        image_schema = MultipleImageSchema.model_validate(quote.model_dump())
-        new_quote = PostMultipleImage(**quote_schema.model_dump())
-        quote_images = [
-            Image(post_multiple_image=new_quote, image_url=img.image_url) for img in image_schema.image_urls
+        post_multiple_image_schema = PostMultipleImageSchema.model_validate(post_multiple_image.model_dump())
+        image_schema = MultipleImageSchema.model_validate(post_multiple_image.model_dump())
+        new_post_multiple_image = PostMultipleImage(**post_multiple_image_schema.model_dump())
+        post_multiple_image_images = [
+            Image(post_multiple_image=new_post_multiple_image, image_url=img.image_url)
+            for img in image_schema.image_urls
         ]
-        new_quote.image_urls += quote_images
-        session.add(new_quote)
+        new_post_multiple_image.image_urls += post_multiple_image_images
+        session.add(new_post_multiple_image)
         await session.commit()
-    await session.refresh(new_quote)
-    return new_quote
+    await session.refresh(new_post_multiple_image)
+    return new_post_multiple_image
 
 
-@router.patch("/post_multiple_images/{quote_id}", status_code=status.HTTP_200_OK)
+@router.patch("/post_multiple_images/{post_multiple_image_id}", status_code=status.HTTP_200_OK)
 async def update_post_multiple_images(
-    quote_id: int,
-    quote: PostMultipleImageSchemaUpdate,
+    post_multiple_image_id: int,
+    post_multiple_image: PostMultipleImageSchemaUpdate,
     session: AsyncSession = Depends(get_async_session),
 ) -> PostMultipleImageSchemaRead:
     query = (
         select(PostMultipleImage)
         .options(selectinload(PostMultipleImage.image_urls))
-        .where(PostMultipleImage.id == quote_id)
+        .where(PostMultipleImage.id == post_multiple_image_id)
     )
     result = await session.execute(query)
-    quote_to_update = result.scalars().first()
-    if not quote_to_update:
+    post_multiple_image_to_update = result.scalars().first()
+    if not post_multiple_image_to_update:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Quote not found",
         )
     stmt = (
         update(PostMultipleImage)
-        .where(PostMultipleImage.id == quote_to_update.id)
-        .values(quote.model_dump(exclude_unset=True))
+        .where(PostMultipleImage.id == post_multiple_image_to_update.id)
+        .values(post_multiple_image.model_dump(exclude_unset=True))
     )
     await session.execute(stmt)
     await session.commit()
-    await session.refresh(quote_to_update)
-    return quote_to_update
+    await session.refresh(post_multiple_image_to_update)
+    return post_multiple_image_to_update

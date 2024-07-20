@@ -18,7 +18,7 @@ class PostSchemaRead(PostSchemaCreate):
     is_published: bool
 
     @field_validator("image_with_text", mode="before")
-    def generate_url_from_filefield(cls, value) -> str | None:
+    def generate_url_from_filefield(cls, value: dict) -> str | None:
         if value["object_name"]:
             return minio_client.cli.get_presigned_url(
                 "GET",
@@ -29,7 +29,7 @@ class PostSchemaRead(PostSchemaCreate):
         return None
 
 
-class PostSchemaUpdate(PostSchemaCreate):
+class PostSchemaUpdate(BaseModel):
     text: str | None = None
     author: str | None = None
     image_url: str | None = None

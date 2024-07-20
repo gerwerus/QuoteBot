@@ -4,6 +4,7 @@ import uuid
 from typing import Literal
 
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont
+from PIL.Image import Image as PILImage
 
 from .entities import ColorChoices, FontChoicesRu, WatermarkChoices
 
@@ -19,7 +20,7 @@ class ImageTextClient:
         font: ImageFont.FreeTypeFont,
         fill_color: ColorChoices,
         blur_amount: int = 18,
-    ) -> Image:
+    ) -> PILImage:
         blurred_img = Image.new("RGBA", size)
         draw = ImageDraw.Draw(blurred_img)
         draw.text(xy=xy, text=text, fill=fill_color.value, font=font)
@@ -27,7 +28,7 @@ class ImageTextClient:
 
     def __draw_multiple_line_text(
         self,
-        image: Image,
+        image: PILImage,
         *,
         text: str,
         font: ImageFont.FreeTypeFont,
@@ -38,7 +39,7 @@ class ImageTextClient:
         draw = ImageDraw.Draw(image)
         image_width, image_height = image.size
         _, _, symbol_width, _ = font.getbbox("a")
-        symbols_per_line = min(40, image_width / symbol_width)
+        symbols_per_line = round(min(40, image_width / symbol_width))
         lines = textwrap.wrap(text, width=symbols_per_line)
         _, _, _, line_height = font.getbbox(lines[0])
         y_text = text_start_height - len(lines) * line_height / 2
@@ -46,42 +47,35 @@ class ImageTextClient:
             _, _, line_width, line_height = font.getbbox(line)
             if with_blur:
                 blurred_img = self.__make_blur(
-                    xy=((image_width - line_width) / 2, y_text),
+                    xy=(round((image_width - line_width) / 2), round(y_text)),
                     size=image.size,
                     text=line,
                     font=font,
                     fill_color=ColorChoices.BLACK,
                 )
                 image.paste(blurred_img, blurred_img)
-            draw.text(
-                ((image_width - line_width) / 2, y_text),
-                line,
-                font=font,
-                fill=text_color.value,
-            )
+            draw.text(xy=((image_width - line_width) / 2, y_text), text=line, font=font, fill=text_color.value)
             y_text += line_height
-        return y_text + line_height * 2
+        return round(y_text + line_height * 2)
 
-    def change_brightness(self, image: Image, brightness: float = 0.6) -> Image:
+    def change_brightness(self, image: PILImage, brightness: float = 0.6) -> PILImage:
         enhancer = ImageEnhance.Brightness(image)
         return enhancer.enhance(brightness)
 
-    def add_watermark(self, image: Image, watermark: WatermarkChoices) -> Image:
-        image_w, image_h = image.size
+    def add_watermark(self, image: PILImage, watermark: WatermarkChoices | None) -> PILImage:
+        if watermark is None:
+            return image
 
-        with Image.open(watermark.value) as watermark:
-            watermark_w, watermark_h = watermark.size
-            image.paste(
-                watermark,
-                ((image_w - watermark_w) // 2, int(0.85 * image_h)),
-                watermark,
-            )
+        image_w, image_h = image.size
+        with Image.open(watermark.value) as watermark_img:
+            watermark_w, watermark_h = watermark_img.size
+            image.paste(watermark_img, ((image_w - watermark_w) // 2, int(0.85 * image_h)), watermark_img)
 
         return image
 
     def image_place_text(
         self,
-        image: Image,
+        image: PILImage,
         *,
         text: str,
         author: str | None = None,
@@ -89,7 +83,7 @@ class ImageTextClient:
         font_path: FontChoicesRu = FontChoicesRu.CENTURY_GOTHIC,
         text_color: ColorChoices = ColorChoices.WHITE,
         offset_y: int = 0,
-    ) -> tuple[bytes, str]:
+    ) -> PILImage:
         width, height = image.size
         font = ImageFont.truetype(font_path.value, size=fontsize)
         text_y_end = self.__draw_multiple_line_text(
@@ -109,7 +103,7 @@ class ImageTextClient:
             )
         return image
 
-    def get_image_name(self, image: Image, format_: ImageFormats) -> str:
+    def get_image_name(self, image: PILImage, format_: ImageFormats) -> str:
         width, height = image.size
         return f"{str(uuid.uuid4())}_{width}x{height}.{format_.lower()}"
 
@@ -125,7 +119,7 @@ class ImageTextClient:
         offset_y: int = 0,
         format_: ImageFormats = "JPEG",
         watermark: WatermarkChoices | None = None,
-    ) -> str:
+    ) -> tuple[bytes, str]:
         with Image.open(img_stream) as image:
             image = self.change_brightness(image)
             image = self.image_place_text(
@@ -137,9 +131,7 @@ class ImageTextClient:
                 text_color=text_color,
                 offset_y=offset_y,
             )
-
-            if watermark:
-                image: Image = self.add_watermark(image, watermark=watermark)
+            image = self.add_watermark(image, watermark=watermark)
 
             with io.BytesIO() as image_bytes:
                 image.save(image_bytes, format=format_)
