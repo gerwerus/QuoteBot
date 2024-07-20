@@ -43,7 +43,10 @@ async def skip_post(message: Message) -> None:
 
 @router.message(Command("send_post"), AdminFilter())
 async def force_send_post(message: Message) -> None:
-    await send_post(chat_id=QUOTE_GROUP_ID)
+    try:
+        await send_post(chat_id=QUOTE_GROUP_ID)
+    except ValueError as e:
+        await message.answer(str(e))
     await message.answer(f"Post was sent to chat_id={QUOTE_GROUP_ID}")
 
 

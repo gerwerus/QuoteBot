@@ -40,7 +40,10 @@ async def skip_quiz(message: Message) -> None:
 
 @router.message(Command("send_quiz"), AdminFilter())
 async def force_send_quiz(message: Message) -> None:
-    await send_quiz(chat_id=QUOTE_GROUP_ID)
+    try:
+        await send_quiz(chat_id=QUOTE_GROUP_ID)
+    except ValueError as e:
+        await message.answer(str(e))
     await message.answer(f"Quiz was sent to chat_id={QUOTE_GROUP_ID}")
 
 
