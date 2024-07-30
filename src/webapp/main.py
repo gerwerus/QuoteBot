@@ -9,5 +9,5 @@ for router in routers:
 
 
 @app.get("/")
-def health_check():
-    return {"health_check": "OK"}
+def health_check() -> dict:
+    return {}

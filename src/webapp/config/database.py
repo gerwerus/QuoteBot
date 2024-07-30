@@ -1,9 +1,8 @@
 from typing import AsyncGenerator
 
 from minio_client import MinioClient
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
 from .settings import settings
@@ -14,7 +13,7 @@ Base = declarative_base()
 minio_client = MinioClient()
 
 engine = create_async_engine(DATABASE_URL, poolclass=NullPool)
-async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+async_session_maker = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:

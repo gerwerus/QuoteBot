@@ -29,11 +29,11 @@ async def make_quiz(message: Message) -> None:
 
 @router.message(Command("skip_quiz"), AdminFilter())
 async def skip_quiz(message: Message) -> None:
-    quizes = await inner_api_client.get_quizes(is_published=False)
-    if not quizes:
-        raise ValueError("No quizes to be sent")
+    quizzes = await inner_api_client.get_quizzes(is_published=False)
+    if not quizzes:
+        raise ValueError("No quizzes to be sent")
 
-    quiz = quizes[0]
+    quiz = quizzes[0]
     await inner_api_client.update_quiz(quiz.id, quiz=QuizUpdate(is_published=True))
     await message.answer(f"Quiz(id={quiz.id}) was skipped")
 
@@ -48,22 +48,22 @@ async def force_send_quiz(message: Message) -> None:
 
 
 async def send_quiz(chat_id: int, *, set_is_published: bool = True) -> None:
-    quizes = await inner_api_client.get_quizes(is_published=False)
-    if not quizes:
-        raise ValueError("No quizes to be sent")
+    quizzes = await inner_api_client.get_quizzes(is_published=False)
+    if not quizzes:
+        raise ValueError("No quizzes to be sent")
 
-    quiz = quizes[0]
+    quiz = quizzes[0]
     logger.debug("GOT quiz (id={}) to be sent {}", quiz.id, quiz)
 
     options = quiz.answers
     options.append(quiz.author)
     shuffle(options)
     answer_index = options.index(quiz.author)
-    emozi = "🏔🤔🧐❓👉🧠👤🌚🗿"
+    emojis = "🏔🤔🧐❓👉🧠👤🌚🗿"
 
     await bot.send_poll(
         chat_id=chat_id,
-        question=f'{choice(emozi)}Кто является автором цитаты? «{quiz.text}»',
+        question=f"{choice(emojis)}Кто является автором цитаты? «{quiz.text}»",
         options=options,
         is_anonymous=True,
         type="quiz",

@@ -18,7 +18,7 @@ class PostSchemaRead(PostSchemaCreate):
     is_published: bool
 
     @field_validator("image_with_text", mode="before")
-    def generate_url_from_filefield(cls, value) -> str | None:
+    def generate_url_from_filefield(cls, value: dict) -> str | None:
         if value["object_name"]:
             return minio_client.cli.get_presigned_url(
                 "GET",
@@ -29,7 +29,7 @@ class PostSchemaRead(PostSchemaCreate):
         return None
 
 
-class PostSchemaUpdate(PostSchemaCreate):
+class PostSchemaUpdate(BaseModel):
     text: str | None = None
     author: str | None = None
     image_url: str | None = None
@@ -60,6 +60,34 @@ class QuizSchemaRead(QuizSchemaCreate):
 
 
 class QuizSchemaUpdate(BaseModel):
+    text: str | None = None
+    author: str | None = None
+    is_published: bool | None = None
+
+
+class ImageSchema(BaseModel):
+    image_url: str
+
+
+class MultipleImageSchema(BaseModel):
+    image_urls: list[ImageSchema]
+
+
+class PostMultipleImageSchema(BaseModel):
+    text: str
+    author: str
+
+
+class PostMultipleImageSchemaCreate(MultipleImageSchema, PostMultipleImageSchema):
+    pass
+
+
+class PostMultipleImageSchemaRead(PostMultipleImageSchemaCreate):
+    id: int
+    is_published: bool
+
+
+class PostMultipleImageSchemaUpdate(BaseModel):
     text: str | None = None
     author: str | None = None
     is_published: bool | None = None
