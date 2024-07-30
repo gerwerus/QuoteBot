@@ -5,6 +5,7 @@ from aiogram.utils.media_group import MediaGroupBuilder
 from inner_api_client.entities import PostMultipleImage, PostMultipleImageUpdate
 from loguru import logger
 
+from ..config.constants import QUOTE_GROUP_ID
 from ..config.settings import bot, inner_api_client, quote_post_client
 from ..filters.admin import AdminFilter
 
@@ -46,7 +47,7 @@ async def skip_post_multiple_images(message: Message) -> None:
 @router.message(Command("send_post_multiple_images"), AdminFilter())
 async def force_send_post_multiple_images(message: Message) -> None:
     try:
-        await send_post_multiple_images(chat_id=message.chat.id)
+        await send_post_multiple_images(chat_id=QUOTE_GROUP_ID)
     except ValueError as e:
         await message.answer(str(e))
     else:
