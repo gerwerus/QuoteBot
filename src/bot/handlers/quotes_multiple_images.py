@@ -5,7 +5,6 @@ from aiogram.utils.media_group import MediaGroupBuilder
 from inner_api_client.entities import PostMultipleImage, PostMultipleImageUpdate
 from loguru import logger
 
-from ..config.constants import QUOTE_GROUP_ID
 from ..config.settings import bot, inner_api_client, quote_post_client
 from ..filters.admin import AdminFilter
 
@@ -30,7 +29,7 @@ async def view_post_multiple_images(message: Message) -> None:
     except ValueError as e:
         await message.answer(str(e))
     else:
-        await message.answer(f"Post with multiple images was sent to chat_id={QUOTE_GROUP_ID}")
+        await message.answer(f"Post with multiple images was sent to chat_id={message.chat.id}")
 
 
 @router.message(Command("skip_post_multiple_images"), AdminFilter())
@@ -47,11 +46,11 @@ async def skip_post_multiple_images(message: Message) -> None:
 @router.message(Command("send_post_multiple_images"), AdminFilter())
 async def force_send_post_multiple_images(message: Message) -> None:
     try:
-        await send_post_multiple_images(chat_id=QUOTE_GROUP_ID)
+        await send_post_multiple_images(chat_id=message.chat.id)
     except ValueError as e:
         await message.answer(str(e))
     else:
-        await message.answer(f"Post with multiple images was sent to chat_id={QUOTE_GROUP_ID}")
+        await message.answer(f"Post with multiple images was sent to chat_id={message.chat.id}")
 
 
 def get_caption(post: PostMultipleImage) -> str:
