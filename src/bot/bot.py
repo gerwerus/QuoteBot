@@ -21,12 +21,12 @@ logging.basicConfig(level=logging.INFO)
 
 
 def configure_scheduled_tasks(scheduler: AsyncIOScheduler) -> None:
-    trigger = OrTrigger([CronTrigger(hour=6, timezone=TIMEZONE), CronTrigger(hour=10, timezone=TIMEZONE)])
+    trigger = OrTrigger([CronTrigger(hour=10, timezone=TIMEZONE), CronTrigger(hour=14, timezone=TIMEZONE)])
     scheduler.add_job(send_post, trigger=trigger, kwargs={"chat_id": QUOTE_GROUP_ID})
-    scheduler.add_job(send_quiz, trigger=CronTrigger(hour=13, timezone=TIMEZONE), kwargs={"chat_id": QUOTE_GROUP_ID})
+    scheduler.add_job(send_quiz, trigger=CronTrigger(hour=17, timezone=TIMEZONE), kwargs={"chat_id": QUOTE_GROUP_ID})
     scheduler.add_job(
         send_post_multiple_images,
-        trigger=CronTrigger(hour=18, timezone=TIMEZONE),
+        trigger=CronTrigger(hour=22, timezone=TIMEZONE),
         kwargs={"chat_id": QUOTE_GROUP_ID},
     )
 
