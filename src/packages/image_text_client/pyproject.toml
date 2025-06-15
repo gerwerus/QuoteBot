@@ -2,7 +2,7 @@
 name = "image_text_client"
 version = "0.1.0"
 description = "Place text to image"
-authors = ["German"]
+authors = ["Simon Druchinin"]
 
 [tool.poetry.dependencies]
 python = "^3.12"
