@@ -2,7 +2,7 @@
 name = "quote_post_client"
 version = "0.1.0"
 description = "Use API's to generate photo with quote by keyword"
-authors = ["German"]
+authors = ["Simon Druchinin"]
 
 [tool.poetry.dependencies]
 python = "^3.12"

@@ -2,7 +2,7 @@
 name = "telegram bot"
 version = "0.1.0"
 description = "bot for managing posts in telegram"
-authors = ["Simon Druchinin, Prosyannikov German"]
+authors = ["Simon Druchinin"]
 package-mode = false
 
 [tool.poetry.dependencies]

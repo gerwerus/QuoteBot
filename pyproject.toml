@@ -2,7 +2,7 @@
 name = "quotebot"
 version = "0.1.0"
 description = "app for managing posts in telegram"
-authors = ["Simon Druchinin, Prosyannikov German"]
+authors = ["Simon Druchinin"]
 readme = "README.md"
 package-mode = false
 

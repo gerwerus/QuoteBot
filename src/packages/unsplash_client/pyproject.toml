@@ -2,7 +2,7 @@
 name = "unsplash_client"
 version = "0.1.0"
 description = "Get photos from Unsplash API(50 per hour max)"
-authors = ["German"]
+authors = ["Simon Druchinin"]
 
 [tool.poetry.dependencies]
 python = "^3.12"

@@ -2,7 +2,7 @@
 name = "quote_client"
 version = "0.1.0"
 description = "Get random quotes from forismatic API"
-authors = ["German Prosyannikov"]
+authors = ["Simon Druchinin"]
 
 [tool.poetry.dependencies]
 python = "^3.12"
