@@ -14,7 +14,7 @@ class QuoteClient:
         LangChoices.ENGLISH: "Unknown author",
         LangChoices.RUSSIAN: "Неизвестный автор",
     }
-    
+
     def __init__(self, settings: QuoteClientSettings | None = None) -> None:
         self.settings = settings or QuoteClientSettings.initialize_from_environment()
 
