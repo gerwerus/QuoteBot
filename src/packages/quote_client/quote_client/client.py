@@ -4,6 +4,7 @@ import random
 import aiohttp
 
 from .entities import LangChoices, QuoteModel
+from .settings import QuoteClientSettings
 
 
 class QuoteClient:
@@ -13,6 +14,9 @@ class QuoteClient:
         LangChoices.ENGLISH: "Unknown author",
         LangChoices.RUSSIAN: "Неизвестный автор",
     }
+    
+    def __init__(self, settings: QuoteClientSettings | None = None) -> None:
+        self.settings = settings or QuoteClientSettings.initialize_from_environment()
 
     async def __get_quote(self, lang: LangChoices) -> QuoteModel:
         params = {
@@ -23,6 +27,7 @@ class QuoteClient:
         async with aiohttp.ClientSession() as session, session.get(
             self.API_URL,
             params=params,
+            proxy=self.settings.PROXY_URL,
         ) as response:
             quote = QuoteModel.model_validate(await response.json())
             quote.author = quote.author or self.DEFAULT_UNKNOWN_AUTHOR[lang]
