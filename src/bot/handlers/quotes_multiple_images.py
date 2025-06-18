@@ -29,15 +29,14 @@ async def view_post_multiple_images(message: Message) -> None:
         await send_post_multiple_images(chat_id=message.chat.id, set_is_published=False)
     except ValueError as e:
         await message.answer(str(e))
-    else:
-        await message.answer(f"Пост с множеством картинок был отправлен в chat_id={message.chat.id}")
 
 
 @router.message(Command("skip_post_multiple_images"), AdminFilter())
 async def skip_post_multiple_images(message: Message) -> None:
     posts = await inner_api_client.get_posts_multiple_images(is_published=False)
     if not posts:
-        raise ValueError("Нет постов с для отправки")
+        await message.answer("Нет постов с для отправки")
+        return
 
     post = posts[0]
     await inner_api_client.update_post_multiple_images(post.id, post=PostMultipleImageUpdate(is_published=True))

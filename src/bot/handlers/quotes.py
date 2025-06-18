@@ -34,7 +34,8 @@ async def view_post(message: Message) -> None:
 async def skip_post(message: Message) -> None:
     posts = await inner_api_client.get_posts(is_published=False)
     if not posts:
-        raise ValueError("Нет постов для отправки")
+        await message.answer("Нет постов для отправки")
+        return
 
     post = posts[0]
     await inner_api_client.update_post(post.id, post=PostUpdate(is_published=True))

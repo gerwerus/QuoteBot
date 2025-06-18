@@ -31,7 +31,8 @@ async def make_quiz(message: Message) -> None:
 async def skip_quiz(message: Message) -> None:
     quizzes = await inner_api_client.get_quizzes(is_published=False)
     if not quizzes:
-        raise ValueError("Нет квизов для отправки")
+        await message.answer("Нет квизов для отправки")
+        return
 
     quiz = quizzes[0]
     await inner_api_client.update_quiz(quiz.id, quiz=QuizUpdate(is_published=True))
