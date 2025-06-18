@@ -19,10 +19,10 @@ async def make_post(message: Message) -> None:
     try:
         post = await quote_post_client.get_post()
         logger.debug("Post (id={}) was created", post.id)
-        await message.answer(f"Post (id={post.id}) was created")
+        await message.answer(f"Пост (id={post.id}) был создан")
     except Exception as e:
         logger.error("Failed to create post: {}", e, backtrace=True)
-        await message.answer("Post was not created, see logs for more info.")
+        await message.answer("Не удалось создать пост, попробуйте еще раз.")
 
 
 @router.message(Command("view_post"), AdminFilter())
@@ -34,11 +34,11 @@ async def view_post(message: Message) -> None:
 async def skip_post(message: Message) -> None:
     posts = await inner_api_client.get_posts(is_published=False)
     if not posts:
-        raise ValueError("No posts to be sent")
+        raise ValueError("Нет постов для отправки")
 
     post = posts[0]
     await inner_api_client.update_post(post.id, post=PostUpdate(is_published=True))
-    await message.answer(f"Post(id={post.id}) was skipped")
+    await message.answer(f"Пост(id={post.id}) был пропущен")
 
 
 @router.message(Command("send_post"), AdminFilter())
@@ -47,13 +47,13 @@ async def force_send_post(message: Message) -> None:
         await send_post(chat_id=QUOTE_GROUP_ID)
     except ValueError as e:
         await message.answer(str(e))
-    await message.answer(f"Post was sent to chat_id={QUOTE_GROUP_ID}")
+    await message.answer(f"Пост был отправлен в chat_id={QUOTE_GROUP_ID}")
 
 
 async def send_post(chat_id: int, *, set_is_published: bool = True) -> None:
     posts = await inner_api_client.get_posts(is_published=False)
     if not posts:
-        raise ValueError("No posts to be sent")
+        raise ValueError("Нет постов для отправки")
 
     post = posts[0]
     logger.debug("GOT post (id={}) to be sent {}", post.id, post)

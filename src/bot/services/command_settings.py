@@ -13,5 +13,10 @@ async def set_default_commands(bot: Bot) -> bool:
             BotCommand(command="make_quiz", description="создать квиз"),
             BotCommand(command="skip_quiz", description="пропустить квиз"),
             BotCommand(command="send_quiz", description="отправить квиз"),
+            BotCommand(command="view_quiz", description="посмотреть квиз"),
+            BotCommand(command="make_post_multiple_images", description="создать пост"),
+            BotCommand(command="skip_post_multiple_images", description="пропустить пост"),
+            BotCommand(command="send_post_multiple_images", description="отправить пост"),
+            BotCommand(command="view_post_multiple_images", description="посмотреть пост"),
         ],
     )

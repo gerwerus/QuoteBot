@@ -17,10 +17,10 @@ async def make_post_multiple_images(message: Message) -> None:
     try:
         post = await quote_post_client.get_post_multiple_images()
         logger.debug("Post with multiple images (id={}) was created", post.id)
-        await message.answer(f"Post with multiple images (id={post.id}) was created")
+        await message.answer(f"Пост с множеством картинок (id={post.id}) был создан")
     except Exception as e:
         logger.error("Failed to create post with multiple images: {}", e, backtrace=True)
-        await message.answer("Post with multiple images was not created, see logs for more info.")
+        await message.answer("Не удалось создать пост с множеством картинок, попробуйте еще раз.")
 
 
 @router.message(Command("view_post_multiple_images"), AdminFilter())
@@ -30,18 +30,18 @@ async def view_post_multiple_images(message: Message) -> None:
     except ValueError as e:
         await message.answer(str(e))
     else:
-        await message.answer(f"Post with multiple images was sent to chat_id={message.chat.id}")
+        await message.answer(f"Пост с множеством картинок был отправлен в chat_id={message.chat.id}")
 
 
 @router.message(Command("skip_post_multiple_images"), AdminFilter())
 async def skip_post_multiple_images(message: Message) -> None:
     posts = await inner_api_client.get_posts_multiple_images(is_published=False)
     if not posts:
-        raise ValueError("No posts with multiple images to be sent")
+        raise ValueError("Нет постов с для отправки")
 
     post = posts[0]
     await inner_api_client.update_post_multiple_images(post.id, post=PostMultipleImageUpdate(is_published=True))
-    await message.answer(f"Post with multiple images (id={post.id}) was skipped")
+    await message.answer(f"Пост с множеством картинок (id={post.id}) был пропущен")
 
 
 @router.message(Command("send_post_multiple_images"), AdminFilter())
@@ -51,7 +51,7 @@ async def force_send_post_multiple_images(message: Message) -> None:
     except ValueError as e:
         await message.answer(str(e))
     else:
-        await message.answer(f"Post with multiple images was sent to chat_id={message.chat.id}")
+        await message.answer(f"Пост с множеством картинок был отправлен в chat_id={message.chat.id}")
 
 
 def get_caption(post: PostMultipleImage) -> str:
@@ -65,7 +65,7 @@ def get_caption(post: PostMultipleImage) -> str:
 async def send_post_multiple_images(chat_id: int, *, set_is_published: bool = True) -> None:
     posts = await inner_api_client.get_posts_multiple_images(is_published=False)
     if not posts:
-        raise ValueError("No posts with multiple images to be sent")
+        raise ValueError("Нет постов с множеством картинок для отправки")
 
     post = posts[0]
     logger.debug("GOT post with multiple images (id={}) to be sent {}", post.id, post)

@@ -24,18 +24,18 @@ async def make_quiz(message: Message) -> None:
         await message.answer(f"Quiz (id={quiz.id}) was created")
     except Exception as e:
         logger.error("Failed to create quiz: {}", e, backtrace=True)
-        await message.answer("Quiz was not created, see logs for more info.")
+        await message.answer("Не удалось создать викторину, попробуйте еще раз.")
 
 
 @router.message(Command("skip_quiz"), AdminFilter())
 async def skip_quiz(message: Message) -> None:
     quizzes = await inner_api_client.get_quizzes(is_published=False)
     if not quizzes:
-        raise ValueError("No quizzes to be sent")
+        raise ValueError("Нет квизов для отправки")
 
     quiz = quizzes[0]
     await inner_api_client.update_quiz(quiz.id, quiz=QuizUpdate(is_published=True))
-    await message.answer(f"Quiz(id={quiz.id}) was skipped")
+    await message.answer(f"Квиз (id={quiz.id}) был пропущен")
 
 
 @router.message(Command("send_quiz"), AdminFilter())
@@ -44,13 +44,21 @@ async def force_send_quiz(message: Message) -> None:
         await send_quiz(chat_id=QUOTE_GROUP_ID)
     except ValueError as e:
         await message.answer(str(e))
-    await message.answer(f"Quiz was sent to chat_id={QUOTE_GROUP_ID}")
+    await message.answer(f"Квиз был отправлен в chat_id={QUOTE_GROUP_ID}")
+
+
+@router.message(Command("view_quiz"), AdminFilter())
+async def view_quiz(message: Message) -> None:
+    try:
+        await send_quiz(chat_id=message.chat.id, set_is_published=False)
+    except ValueError as e:
+        await message.answer(str(e))
 
 
 async def send_quiz(chat_id: int, *, set_is_published: bool = True) -> None:
     quizzes = await inner_api_client.get_quizzes(is_published=False)
     if not quizzes:
-        raise ValueError("No quizzes to be sent")
+        raise ValueError("Нет квизов для отправки")
 
     quiz = quizzes[0]
     logger.debug("GOT quiz (id={}) to be sent {}", quiz.id, quiz)
